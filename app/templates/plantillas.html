@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 3rem;">
+    <h1>Plantillas de Pensamiento</h1>
+    <p class="meta-text">Herramientas para descargar la mente y estructurar el día. Sin juicio, sin métricas.</p>
+</div>
+
+<div class="form-section"
+    style="background: linear-gradient(135deg, #fafaf8 0%, #f5f5f3 100%); border-left: 3px solid #9CA3AF;">
+    <h2>📝 Inventario Semanal</h2>
+    <p style="font-style: italic; color: #666; margin-bottom: 1rem;">
+        <strong>Objetivo:</strong> Vaciar la mente. <span style="color: #EF4444;">NO es una lista de tareas
+            obligatorias</span>, es un registro de realidad.<br>
+        <strong>Frecuencia:</strong> Domingos o Lunes. <strong>Duración:</strong> 15 min.
+    </p>
+
+    <div
+        style="background: #fff; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; border-left: 3px solid #10B981;">
+        <p style="margin: 0; font-size: 0.9rem; line-height: 1.6;">
+            <strong>✅ Este inventario SÍ incluye:</strong> Pendientes abiertos (aunque no sepas cuándo los harás), casos
+            activos/latentes, frentes en pausa, ideas que ocupan espacio mental.<br>
+            <strong>❌ NO es:</strong> Un plan de la semana, lista de ejecución, compromiso, backlog priorizado.
+        </p>
+    </div>
+
+    <!-- Load Previous Inventory Option -->
+    {% if inventario %}
+    <div id="load-prev-container" style="margin-bottom: 1.5rem; text-align: center;">
+        <button type="button" id="load-prev-btn" class="btn btn-outline"
+            style="font-size: 0.9rem; padding: 0.75rem 1.5rem;">
+            🔄 Cargar inventario anterior ({{ inventario.timestamp }})
+        </button>
+        <p style="font-size: 0.8rem; color: #6B7280; margin-top: 0.5rem; font-style: italic;">
+            Solo si quieres editarlo, no empezar de cero
+        </p>
+    </div>
+
+    <!-- Warning Banner (hidden initially) -->
+    <div id="editing-warning"
+        style="display: none; background: #FEF3C7; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; border-left: 4px solid #F59E0B;">
+        <p style="margin: 0; font-size: 0.9rem; color: #92400E; font-weight: 600;">
+            ⚠️ Editando desde inventario previo ({{ inventario.timestamp }}). Ajusta lo que cambió esta semana.
+        </p>
+    </div>
+    {% endif %}
+
+    <form action="/api/guardar" method="POST" id="weekly-form">
+        <input type="hidden" name="tipo" value="Inventario Semanal">
+        <div class="form-group">
+            <label>Energía / Estado Físico-Mental</label>
+            <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
+                Ej: "Cansancio acumulado, necesito descanso" / "Energía baja pero estable" / "Confusión sobre qué es
+                importante"
+            </small>
+            <textarea name="energia" id="weekly-energia" placeholder="¿Cómo te sientes?"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Claridad de Frentes — Observación, no obligación</label>
+            <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
+                Ej: "Caso Hexagon – análisis pendiente" / "Tarea ancla: flujo Remedy" / "Migración docs en pausa" /
+                "Ideas SLS rondando"
+            </small>
+            <textarea name="claridad_frentes" id="weekly-claridad" placeholder="¿Qué está activo o latente?"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Ajuste Necesario</label>
+            <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
+                Ej: "Demasiados frentes abiertos" / "Necesito pausar prototipos" / "Falta una sola prioridad"
+            </small>
+            <textarea name="ajuste_necesario" id="weekly-ajuste" placeholder="¿Qué necesita cambiar?"></textarea>
+        </div>
+
+        <div id="weekly-preview-container" class="hidden">
+            <label>Confirmar Entrada</label>
+            <div id="weekly-preview" class="preview-box"></div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <button type="button" class="btn btn-outline"
+                onclick="togglePreview('weekly-energia', 'weekly-preview')">Ver Vista Previa</button>
+            <button type="submit" class="btn">Registrar en Bitácora</button>
+        </div>
+    </form>
+</div>
+
+<div class="form-section"
+    style="background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%); border-left: 3px solid #3B82F6;">
+    <h2>⚡ Plan Diario</h2>
+    <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; font-size: 1rem;">
+        Aquí sí se decide. Poco. Consciente.
+    </p>
+    <p style="font-style: italic; color: #666; margin-bottom: 2rem;">
+        Principio: Sostener el día con dignidad. <strong>Tres bloques.</strong> No llenar por llenar.
+    </p>
+
+    <!-- Collapsible Last Inventory Context -->
+    {% if inventario %}
+    <details
+        style="margin-bottom: 1.5rem; border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden; background: #F9FAFB;">
+        <summary
+            style="padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 0.75rem; user-select: none; transition: background-color 0.2s;">
+            <span style="font-size: 1.1rem;">📋</span>
+            <span>Ver Último Inventario Semanal</span>
+            <span style="margin-left: auto; font-size: 0.8rem; font-weight: 400; color: #6B7280;">{{
+                inventario.timestamp }}</span>
+        </summary>
+
+        <div style="padding: 1.5rem; background: white; border-top: 1px solid #E5E7EB;">
+            <p style="font-size: 0.85rem; color: #6B7280; margin-bottom: 1.25rem; font-style: italic;">
+                Este es tu contexto semanal. Recuerda: del inventario completo, solo UNA cosa puede convertirse en tarea
+                estructural hoy.
+            </p>
+
+            {% if inventario.energia %}
+            <div style="margin-bottom: 1.25rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; margin-bottom: 0.5rem; font-weight: 600;">
+                    Energía / Estado</div>
+                <div
+                    style="padding: 0.75rem; background: #FEF3C7; border-left: 3px solid #F59E0B; border-radius: 4px; font-size: 0.9rem; line-height: 1.6; color: #78350F; white-space: pre-wrap;">
+                    {{ inventario.energia }}</div>
+            </div>
+            {% endif %}
+
+            {% if inventario.claridad_frentes %}
+            <div style="margin-bottom: 1.25rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; margin-bottom: 0.5rem; font-weight: 600;">
+                    Claridad de Frentes</div>
+                <div
+                    style="padding: 0.75rem; background: #EFF6FF; border-left: 3px solid #3B82F6; border-radius: 4px; font-size: 0.9rem; line-height: 1.6; color: #1E40AF; white-space: pre-wrap;">
+                    {{ inventario.claridad_frentes }}</div>
+            </div>
+            {% endif %}
+
+            {% if inventario.ajuste_necesario %}
+            <div>
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; margin-bottom: 0.5rem; font-weight: 600;">
+                    Ajuste Necesario</div>
+                <div
+                    style="padding: 0.75rem; background: #F3F4F6; border-left: 3px solid #6B7280; border-radius: 4px; font-size: 0.9rem; line-height: 1.6; color: #374151; white-space: pre-wrap;">
+                    {{ inventario.ajuste_necesario }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </details>
+    {% else %}
+    <div
+        style="margin-bottom: 1.5rem; padding: 1rem; background: #F9FAFB; border: 1px dashed #D1D5DB; border-radius: 6px; text-align: center; color: #6B7280; font-size: 0.9rem; font-style: italic;">
+        No hay inventario semanal registrado. <a href="#inventario-semanal"
+            style="color: #3B82F6; text-decoration: underline;">Crear uno primero</a> te ayudará a tener contexto para
+        planificar.
+    </div>
+    {% endif %}
+
+    <div
+        style="background: #FEF3C7; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; border-left: 3px solid #F59E0B;">
+        <p style="margin: 0; font-size: 0.85rem; line-height: 1.6; color: #92400E;">
+            <strong>⚠️ Recordatorio:</strong> Del inventario completo, solo UNA cosa puede ser tarea estructural hoy
+            (Bloque 2). Los otros items siguen ahí, no desaparecen, no se convierten en culpa.
+        </p>
+    </div>
+
+    <form action="/api/guardar" method="POST" id="daily-form">
+        <input type="hidden" name="tipo" value="Plan Diario">
+
+        <div class="form-group">
+            <label>1. Obligaciones Reales (Ya existen)</label>
+            <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
+                Ej: "Reunión lunes 10am" / "Caso asignado por cliente"
+            </small>
+            <textarea name="obligaciones" id="b1" style="min-height: 100px;"
+                placeholder="Reuniones, entregables con fecha hoy..."></textarea>
+        </div>
+
+        <div class="form-group"
+            style="background: #F3F4F6; padding: 1.5rem; border-radius: 4px; border: 2px dashed #9CA3AF;">
+            <label style="color: #EF4444;">2. Tarea Estructural (Máximo 1 — SOLO UNA)</label>
+            <small style="display: block; color: #666; margin-bottom: 0.5rem; font-style: italic;">
+                Ej: "Tarea ancla: entender flujo Remedy" — Si no hay energía: dejar vacío.
+            </small>
+            <input type="text" name="tarea_ancla" id="b2" placeholder="Opcional. Solo si hay capacidad."
+                style="padding: 1.2rem;">
+        </div>
+
+        <div class="form-group">
+            <label>3. Espacio Reactivo / Libre</label>
+            <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
+                No se planifica. Acepta que existirá.
+            </small>
+            <textarea name="resto_dia" id="b3" style="min-height: 100px;"
+                placeholder="Responder mensajes, imprevistos, descanso..."></textarea>
+        </div>
+
+        <input type="hidden" name="contenido" id="daily-full-content">
+
+        <div id="daily-preview-container" class="hidden">
+            <label>Confirmar Plan</label>
+            <div id="daily-preview" class="preview-box"></div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; align-items: center;">
+            <button type="button" class="btn btn-outline" onclick="composeDaily()">Ver Vista Previa</button>
+            <button type="submit" class="btn" onclick="composeDaily()">Comprometer Plan</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function composeDaily() {
+        const b1 = document.getElementById('b1').value;
+        const b2 = document.getElementById('b2').value;
+        const b3 = document.getElementById('b3').value;
+
+        // Formato limpio para la bitácora
+        const text = `**Obligaciones**
+${b1}
+
+**Estructural**
+${b2}
+
+**Reactivo/Libre**
+${b3}`;
+
+        document.getElementById('daily-full-content').value = text;
+        document.getElementById('daily-preview').innerText = text;
+        document.getElementById('daily-preview-container').classList.remove('hidden');
+    }
+
+    // Load Previous Inventory Functionality
+    {% if inventario %}
+    (function () {
+        const btn = document.getElementById('load-prev-btn');
+        const loadContainer = document.getElementById('load-prev-container');
+        const warningBanner = document.getElementById('editing-warning');
+        const energiaField = document.getElementById('weekly-energia');
+        const claridadField = document.getElementById('weekly-claridad');
+        const ajusteField = document.getElementById('weekly-ajuste');
+
+        if (btn) {
+            btn.addEventListener('click', function () {
+                // Hide button container
+                loadContainer.style.display = 'none';
+
+                // Show warning banner
+                warningBanner.style.display = 'block';
+
+                // Pre-fill fields with previous inventory data (in gray/italic)
+                {% if inventario.energia %}
+                energiaField.value = {{ inventario.energia | tojson }};
+                energiaField.style.color = '#9CA3AF';
+                energiaField.style.fontStyle = 'italic';
+                {% endif %}
+
+                {% if inventario.claridad_frentes %}
+                claridadField.value = {{ inventario.claridad_frentes | tojson }};
+                claridadField.style.color = '#9CA3AF';
+                claridadField.style.fontStyle = 'italic';
+                {% endif %}
+
+                {% if inventario.ajuste_necesario %}
+                ajusteField.value = {{ inventario.ajuste_necesario | tojson }};
+                ajusteField.style.color = '#9CA3AF';
+                ajusteField.style.fontStyle = 'italic';
+                {% endif %}
+
+                // Add event listeners to change style when user edits
+                const fields = [energiaField, claridadField, ajusteField];
+                fields.forEach(field => {
+                    if (field) {
+                        field.addEventListener('input', function () {
+                            this.style.color = '#1a1a1a';
+                            this.style.fontStyle = 'normal';
+                        }, { once: true });
+                    }
+                });
+
+                // Scroll to first field
+                energiaField.focus();
+            });
+        }
+    }) ();
+    {% endif %}
+</script>
+{% endblock %}

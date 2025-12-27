@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema 2026</title>
+    <!-- Google Fonts: Merriweather (Serif) & Inter (Sans) for high contrast -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* 
+           DESIGN SYSTEM: "Monastic Intellectual"
+           - Minimal color
+           - High legibility
+           - Structural silence 
+        */
+        :root {
+            --bg-body: #fdfdfc;
+            /* Very subtle warm white */
+            --bg-paper: #ffffff;
+            --ink-primary: #1a1a1a;
+            --ink-secondary: #555555;
+            --ink-tertiary: #888888;
+
+            --accent-subtle: #eaddcf;
+            /* Beige/Sand */
+            --accent-structural: #333333;
+
+            --font-serif: 'Merriweather', Georgia, serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+
+            --max-width: 740px;
+            /* Optimal measure */
+            --spacing-section: 4rem;
+        }
+
+        /* Base Reset */
+        body {
+            background-color: var(--bg-body);
+            color: var(--ink-primary);
+            font-family: var(--font-serif);
+            line-height: 1.8;
+            font-size: 19px;
+            /* Authoritative size */
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Layout Container */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 3rem 1.5rem 8rem;
+        }
+
+        /* Header / Nav */
+        header {
+            font-family: var(--font-sans);
+            padding: 2rem 0 4rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .brand {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--ink-primary);
+            text-decoration: none;
+        }
+
+        nav a {
+            color: var(--ink-tertiary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-left: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: var(--ink-primary);
+        }
+
+        /* Typography Hierarchy */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: var(--font-sans);
+            color: var(--ink-primary);
+            margin-top: 3.5rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-top: 0;
+            padding-bottom: 2rem;
+            border-bottom: 3px solid var(--accent-subtle);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding-bottom: 0.5rem;
+            margin-top: 4rem;
+            /* Section break */
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-top: 2rem;
+        }
+
+        strong {
+            font-weight: 700;
+            color: #000;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            color: #2a2a2a;
+            /* Slightly softer than pure black */
+        }
+
+        /* Lists */
+        ul,
+        ol {
+            margin-bottom: 2rem;
+            padding-left: 1.2rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            padding-left: 0.5rem;
+        }
+
+        li::marker {
+            color: var(--ink-tertiary);
+            font-size: 0.8em;
+        }
+
+        /* --- SPECIAL BLOCKS (Targeted via Markdown Classes) --- */
+
+        /* Metadata Block (Top of documents) */
+        .metadata {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--ink-secondary);
+            border-left: 2px solid var(--accent-subtle);
+            padding: 0.5rem 0 0.5rem 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .metadata p {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Principle Block (The "Insight") */
+        .principle {
+            background-color: #faf9f6;
+            /* Very light warm grey */
+            padding: 2rem;
+            margin: 3rem 0;
+            border-radius: 2px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .principle strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-style: normal;
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: var(--ink-tertiary);
+            letter-spacing: 0.1em;
+        }
+
+        /* Context/Definition Block */
+        .context-block {
+            border: 1px solid var(--accent-subtle);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        /* Guardrail / Warning Block */
+        .guardrail {
+            border-left: 4px solid var(--accent-structural);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            color: var(--ink-secondary);
+        }
+
+        /* Bitacora Entries */
+        .bitacora-entry {
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+            border-top: 1px dotted var(--accent-subtle);
+        }
+
+        .bitacora-date {
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--ink-secondary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .bitacora-type {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--ink-tertiary);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            border: 1px solid #eee;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        /* Forms Styling (Minimal) */
+        input,
+        textarea,
+        select {
+            font-family: var(--font-sans);
+            border: 1px solid #ddd;
+            padding: 1rem;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            background: #fff;
+            color: var(--ink-primary);
+        }
+
+        label {
+            font-family: var(--font-sans);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-weight: 600;
+        }
+
+        .btn {
+            background-color: var(--ink-primary);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--ink-primary);
+            color: var(--ink-primary);
+        }
+
+        /* Utility */
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--accent-subtle);
+            margin: 4rem auto;
+            width: 30%;
+            /* Editorial separator */
+        }
+
+        /* ===== BALANCED SCORECARD TABLE ===== */
+        /* Special styling for the strategic map table */
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 2.5rem 0;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            color: #ffffff;
+        }
+
+        thead th {
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: 3px solid var(--accent-subtle);
+            color: #ffffff !important;
+        }
+
+        /* Force white color for all content inside table headers */
+        thead th,
+        thead th strong,
+        thead th * {
+            color: #ffffff !important;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background-color: #fafaf8;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody td {
+            padding: 1.5rem;
+            vertical-align: top;
+            line-height: 1.7;
+        }
+
+        tbody td:first-child {
+            font-weight: 600;
+            color: var(--ink-primary);
+            font-size: 0.95rem;
+            width: 10%;
+            background: linear-gradient(90deg, #fafaf8 0%, #ffffff 100%);
+        }
+
+        tbody td:nth-child(2) {
+            font-weight: 500;
+            color: var(--ink-secondary);
+            font-size: 0.88rem;
+            width: 20%;
+        }
+
+        tbody td:nth-child(3) {
+            color: #555;
+            width: 30%;
+            font-size: 0.87rem;
+        }
+
+        tbody td:nth-child(4) {
+            color: var(--ink-primary);
+            width: 40%;
+            font-family: var(--font-serif);
+            font-size: 0.92rem;
+        }
+
+        /* Level-specific colors (subtle left border accent) */
+        tbody tr:nth-child(1) td:first-child {
+            border-left: 4px solid #6B7280;
+        }
+
+        tbody tr:nth-child(2) td:first-child {
+            border-left: 4px solid #8B5CF6;
+        }
+
+        tbody tr:nth-child(3) td:first-child {
+            border-left: 4px solid #3B82F6;
+        }
+
+        tbody tr:nth-child(4) td:first-child {
+            border-left: 4px solid #10B981;
+        }
+
+        tbody tr:nth-child(5) td:first-child {
+            border-left: 4px solid #F59E0B;
+        }
+
+        tbody tr:nth-child(6) td:first-child {
+            border-left: 4px solid #EF4444;
+        }
+
+        /* Goals formatting within cells */
+        tbody td br+strong,
+        tbody td strong:first-child {
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        tbody td:nth-child(4) br {
+            content: "";
+            display: block;
+            margin-bottom: 0.6rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="/docs" class="brand">Sistema Personal 2026</a>
+            <nav>
+                <a href="/docs/estrategico">Estratégico</a>
+                <a href="/docs/operativo">Operativo</a>
+                <a href="/docs/bitacora">Bitácora</a>
+                <a href="/plantillas">Plantillas</a>
+            </nav>
+        </header>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- Chat Widget -->
+    <div id="chat-widget"
+        style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; font-family: var(--font-sans);">
+        <button id="chat-toggle" onclick="toggleChat()" style="
+            background: var(--ink-primary); 
+            color: #fff; 
+            border: none; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        ">?</button>
+
+        <div id="chat-window" style="
+            display: none; 
+            width: 360px; 
+            height: 520px; 
+            background: #fff; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            flex-direction: column; 
+            overflow: hidden;
+            position: absolute;
+            bottom: 75px;
+            right: 0;
+        ">
+            <div
+                style="background: #f5f5f5; padding: 1rem; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between;">
+                <span style="font-weight: 600; font-size: 0.9rem;">Discernimiento</span>
+                <span style="cursor: pointer;" onclick="toggleChat()">✕</span>
+            </div>
+            <div id="chat-messages"
+                style="flex: 1; padding: 1rem; overflow-y: auto; background: #fff; font-size: 0.9rem;">
+                <div style="margin-bottom: 1rem; color: #666; font-style: italic;">Sistema activo. Documentos cargados.
+                </div>
+            </div>
+            <div style="padding: 1rem; border-top: 1px solid #ddd; background: #fafafa;">
+                <input type="text" id="chat-input" placeholder="Escribe aquí..." onkeypress="handleKeyPress(event)"
+                    style="
+                    width: 100%; 
+                    padding: 0.8rem; 
+                    border: 1px solid #ddd; 
+                    border-radius: 4px;
+                    font-size: 0.9rem;
+                ">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePreview(sourceId, targetId) {
+            const src = document.getElementById(sourceId).value;
+            const target = document.getElementById(targetId);
+            const container = document.getElementById(targetId + '-container');
+            target.innerText = src;
+            container.classList.remove('hidden');
+        }
+
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = win.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            appendMessage('user', text);
+            input.value = '';
+
+            const container = document.getElementById('chat-messages');
+            const loadingId = 'loading-' + Date.now();
+            container.innerHTML += `<div id="${loadingId}" style="color: #ccc;">Analizando...</div>`;
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+                document.getElementById(loadingId)?.remove();
+                appendMessage('assistant', data.response || data.error);
+            } catch (e) {
+                document.getElementById(loadingId)?.remove();
+                appendMessage('system', "Error de conexión.");
+            }
+        }
+
+        function appendMessage(role, text) {
+            const container = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.style.marginBottom = '1rem';
+
+            if (role === 'user') {
+                div.style.textAlign = 'right';
+                div.innerHTML = `<span style="background: #eaddcf; padding: 0.5rem 1rem; border-radius: 4px; display: inline-block;">${text}</span>`;
+            } else {
+                div.style.textAlign = 'left';
+                const formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                div.innerHTML = `<span style="background: #f4f4f0; padding: 0.5rem 1rem; border-radius: 4px; display: inline-block;">${formatted}</span>`;
+            }
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>

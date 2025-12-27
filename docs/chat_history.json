@@ -1,0 +1,98 @@
+[
+  {
+    "role": "user",
+    "content": "quisiera saber cual nivel activar y que tarea gregar, podrias ayudarme?"
+  },
+  {
+    "role": "assistant",
+    "content": "Error: No GEMINI_API_KEY found in environment variables."
+  },
+  {
+    "role": "user",
+    "content": "quiero saber que nivel del mapa strategico activar y cual tarea definir , me puedes ayudar con esto?"
+  },
+  {
+    "role": "assistant",
+    "content": "Para ayudarte a definir qué nivel activar y qué tarea agregar, necesito entender mejor tu situación actual.\n\nSegún el Documento 1, solo un frente estratégico variable (Nivel 2 en adelante) puede estar activo a la vez.\n\n¿Cuál de los siguientes frentes estratégicos variables es el que más requiere tu atención en este momento?\n* Trabajo (Hexagon u otros)\n* Migración\n* Finanzas\n* Formación\n* Marca personal\n* Europa (becas / estudios)\n* Proyecto con psicólogo\n"
+  },
+  {
+    "role": "user",
+    "content": "cual es la meta y tarea activas actualmente"
+  },
+  {
+    "role": "assistant",
+    "content": "No tengo acceso a esa información. El sistema no lleva registro automático de tareas activas.\n\nPara saber cuál es tu tarea ancla activa, revisa:\n1.  Tus notas personales.\n2.  La última vez que definiste una tarea ancla (si recuerdas cuándo fue).\n\nSi no encuentras registro, puedes asumir que no hay tarea ancla activa en este momento.\n"
+  },
+  {
+    "role": "user",
+    "content": "cual es el nivel y meta que actualmente se encuentra activo"
+  },
+  {
+    "role": "assistant",
+    "content": "Según el Documento 1, el Nivel 1 (Identidad, Salud y Sentido) y el Nivel 2 (Sostén Vital y Estabilidad) están siempre activos. Sin embargo, el Nivel 1 no tiene tareas asignables.\n\nDe los frentes variables (Nivel 2 en adelante), solo uno debería estar en modo \"Activo\". Los demás deberían estar en \"Mantenimiento Activo\", \"Observación\" o \"Latente\".\n\nPara clarificar, ¿a qué te refieres con \"activo\"? ¿Te refieres al frente al que estás dedicando más energía y foco en este momento?\n"
+  },
+  {
+    "role": "user",
+    "content": "si"
+  },
+  {
+    "role": "assistant",
+    "content": "Ok. Para identificar el frente activo, revisa los siguientes niveles y dime cuál describe mejor tu foco principal actual:\n\n*   **Nivel 2:** Sostén Vital y Estabilidad (Trabajo, Migración, Finanzas)\n*   **Nivel 3:** Capacidades y Aprendizaje (Formación)\n*   **Nivel 4:** Oferta al Mundo (Marca personal)\n*   **Nivel 6:** Opciones Estratégicas Futuras (Europa, Proyecto con psicólogo)\n"
+  },
+  {
+    "role": "user",
+    "content": "cual es el nivel meta y tarea actual que estan activos"
+  },
+  {
+    "role": "assistant",
+    "content": "No tengo esa información en este momento. Para determinarlo, te propongo este proceso:\n\n1.  **Revisa el Nivel 2 (Sostén Vital y Estabilidad):** ¿Hay alguna tarea **cerrable en 1-2 semanas** relacionada con trabajo, migración o finanzas que requiera atención **urgente**? (Ver Documento 1, sección 10: Tareas Ancla).\n2.  **Si NO hay tarea urgente en Nivel 2:** ¿Hay algún otro nivel (3, 4 o 6) que estés priorizando conscientemente y que tenga una tarea específica definida?\n\nResponde a estas preguntas y podremos identificar el nivel, meta y tarea activa actual.\n"
+  },
+  {
+    "role": "user",
+    "content": "cual es mi nivel meta y tarea actualmente activos"
+  },
+  {
+    "role": "assistant",
+    "content": "No tengo acceso a esa información en este momento.\n\nSin embargo, puedo ayudarte a determinarlo. Responde estas preguntas:\n\n1.  **¿Cuál es tu mayor fragilidad o fuente de estrés en este momento?** (Documento 1, sección 10: Tareas Ancla). ¿Está relacionada con trabajo, migración, finanzas, aprendizaje, marca personal, Europa o tu proyecto con el psicólogo?\n2.  **¿Qué acción clara y concreta podrías realizar en los próximos 1-2 semanas para reducir esa fragilidad?** (Debe ser una tarea \"operativa cerrable\", Tipo A en el Documento 1, sección 7).\n\nTu respuesta a estas preguntas nos indicará tu nivel, meta y tarea activa actual.\n"
+  },
+  {
+    "role": "user",
+    "content": "cual es mi nivel meta y tarea actualmente activos"
+  },
+  {
+    "role": "assistant",
+    "content": "Para determinar tu nivel, meta y tarea activa actual, te propongo este ejercicio de reflexión:\n\n1.  **Revisa tu Plan Diario Activo (timestamp 2025-12-26 21:03):**\n    *   ¿La tarea ancla \"Revisar documentacion tecnica\" sigue activa y relevante?\n    *   Si no, ¿qué la reemplazó?\n2.  **Si la tarea ancla ya no es relevante:**\n    *   ¿Qué fragilidad o necesidad apremiante sientes ahora?\n    *   ¿A qué nivel del mapa estratégico corresponde esa fragilidad? (Nivel 2: Sostén vital, Nivel 3: Capacidades, etc.)\n    *   ¿Qué tarea concreta y cerrable en 1-2 semanas podrías definir para abordar esa fragilidad?\n\nResponde estas preguntas y podremos identificar tu nivel, meta y tarea activa actual.\n"
+  },
+  {
+    "role": "user",
+    "content": "cual es mi nivel meta y tarea actualmente activos"
+  },
+  {
+    "role": "assistant",
+    "content": "Según el **ESTADO ACTUAL DEL SISTEMA**, tu tarea ancla activa (al 2025-12-26 21:03) es \"Revisar documentacion tecnica\". Esta tarea está relacionada con tus obligaciones en Hexagon, lo que la ubica en el **Nivel 2 (Sostén Vital y Estabilidad)**.\n\n¿Esta información sigue siendo precisa? ¿O necesitas ajustar tu plan diario?\n"
+  },
+  {
+    "role": "user",
+    "content": "por favor ayudame a elegir cual podria ser mi siguiente tarea ancla"
+  },
+  {
+    "role": "assistant",
+    "content": "Para elegir tu siguiente tarea ancla, considera lo siguiente:\n\n1.  **Revisa el Inventario Semanal:** Aunque no hay un inventario reciente registrado, reflexiona sobre qué pendientes, casos activos, frentes en pausa o ideas están ocupando espacio mental (Documento 2, sección 4).\n2.  **Identifica la fragilidad:** De esa lista, ¿cuál es la situación que te genera mayor estrés o incertidumbre? (Documento 1, sección 10).\n3.  **Define una acción concreta:** ¿Qué tarea operativa y cerrable en 1-2 semanas podrías realizar para reducir esa fragilidad? (Documento 1, sección 7).\n\nSi necesitas ayuda para clasificar las opciones, considera estas preguntas:\n\n*   ¿Esta tarea apoya directamente tu Nivel 2 (Sostén Vital) o es más un desarrollo de Nivel 3 (Capacidades) o superior?\n*   ¿Esta tarea responde a una necesidad real o a ansiedad de estar ocupado?\n*   ¿Qué pasaría si no haces nada con esto durante 2 semanas?\n"
+  },
+  {
+    "role": "user",
+    "content": "como puedo saber si estoy preparacdo para activar microactividades de metas distintas a las que estan fijadas ene l nivel 2?"
+  },
+  {
+    "role": "assistant",
+    "content": "Para determinar si estás preparado para activar microactividades de metas distintas a las del Nivel 2, considera lo siguiente:\n\n1.  **Revisa tu estado actual:** ¿Cómo te sientes con respecto a tu tarea ancla actual (Nivel 2)? ¿La estás gestionando con estabilidad y sin sentirte abrumado?\n2.  **Evalúa tu capacidad:** ¿Tienes suficiente energía y claridad mental para agregar otra tarea, aunque sea pequeña? (Documento 2, sección 5).\n3.  **Considera el principio rector:** ¿Activar microactividades de otras metas apoya la \"estabilidad suficiente antes que optimización\" (Documento 1, sección 3), o podría generar dispersión y sobreexigencia?\n\nSi respondes afirmativamente a las tres preguntas, podrías considerar agregar microactividades de otras metas. Sin embargo, recuerda la **Regla Central:** Solo 1 frente variable puede estar activo a la vez (Documento 1, sección 4).\n\n¿Qué te dice esto sobre dónde poner el foco?\n"
+  },
+  {
+    "role": "user",
+    "content": "cuales son mis tareas planificadas para hoy"
+  },
+  {
+    "role": "assistant",
+    "content": "Según tu Plan Diario Activo (timestamp 2025-12-26 23:36):\n\n**Obligaciones:**\n\n1.  Limpiar Bano y comprar cosas minimas de la casa (Aseo, comida, etc)\n2.  Evaluar si voy a viajar o no a Garzon para pasar fin de ano\n3.  Cortarme el cabello\n\n**Tarea Ancla:**\n\n*   Entender flujo de resolucion de casos Hexagon - Flujo completo (Nivle 2. Meta: Hexagon estable). Meta:)\n\n**Espacio Reactivo:**\n\n*   Pensar ideas, escribirlas, expresion creativa en cualquiera de mis areas de interes\n\n¿Este plan sigue siendo vigente para hoy?\n"
+  }
+]

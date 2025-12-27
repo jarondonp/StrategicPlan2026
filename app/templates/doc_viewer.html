@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if not is_markdown %}
+<h1>{{ title }}</h1>
+{% endif %}
+
+<!-- Add a specific class if it's the bitacora to apply special CSS rules -->
+<div class="document-content {% if doc_id == 'bitacora' %}bitacora-content{% endif %}">
+    {% if is_markdown %}
+    {{ content | safe }}
+    {% else %}
+    <pre>{{ content }}</pre>
+    {% endif %}
+</div>
+
+{% if doc_id == 'bitacora' %}
+<div style="margin-top: 5rem; text-align: center; border-top: 1px dotted #ccc; padding-top: 3rem;">
+    <p class="meta-text">Registro histórico de ajustes y planes.</p>
+    <a href="/bitacora/nueva" class="btn btn-outline">Registrar Ajuste Manual</a>
+</div>
+{% endif %}
+
+{% endblock %}

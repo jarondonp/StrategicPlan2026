@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Header -->
+<div
+    style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: white; padding: 3rem 2rem; margin: -2rem -2rem 3rem -2rem; border-radius: 0 0 12px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <h1
+            style="margin: 0 0 0.5rem 0; font-size: 2.5rem; font-weight: 300; letter-spacing: -0.02em; color: #ffffff !important;">
+            Sistema 2026
+        </h1>
+        <p style="margin: 0; font-size: 1.1rem; opacity: 0.9; font-weight: 300; color: #ffffff !important;">Panel de
+            Estado · Javier Rondón</p>
+    </div>
+</div>
+
+<div style="max-width: 1200px; margin: 0 auto;">
+
+    <!-- Estado Ejecutivo -->
+    <div
+        style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); padding: 2.5rem; border-radius: 12px; margin-bottom: 2.5rem; border: 1px solid #e9ecef; box-shadow: 0 2px 12px rgba(0,0,0,0.04);">
+        <h2
+            style="margin: 0 0 1.5rem 0; font-size: 1.5rem; color: #1a1a1a; font-weight: 500; display: flex; align-items: center; gap: 0.75rem;">
+            <span
+                style="display: inline-block; width: 8px; height: 8px; background: #10B981; border-radius: 50%; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);"></span>
+            Estado Ejecutivo
+        </h2>
+
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+            <!-- Última Actualización -->
+            <div style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #6366F1;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.5rem; font-weight: 600;">
+                    Última Actualización</div>
+                <div style="font-size: 1.25rem; font-weight: 600; color: #1a1a1a;">
+                    {% if state.plan_diario %}
+                    {{ state.plan_diario.timestamp }}
+                    {% else %}
+                    Sin registro
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tarea Ancla -->
+            <div style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #8B5CF6;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.5rem; font-weight: 600;">
+                    Tarea Ancla Activa</div>
+                <div style="font-size: 1rem; font-weight: 500; color: #1a1a1a; line-height: 1.4;">
+                    {% if state.plan_diario and state.plan_diario.tarea_ancla %}
+                    {{ state.plan_diario.tarea_ancla[:60] }}{% if state.plan_diario.tarea_ancla|length > 60 %}...{%
+                    endif %}
+                    {% else %}
+                    <span style="color: #9CA3AF; font-style: italic;">Ninguna</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mapa Estratégico - 6 Niveles -->
+    <div style="margin-bottom: 2.5rem;">
+        <h2
+            style="margin: 0 0 1.5rem 0; font-size: 1.5rem; color: #1a1a1a; font-weight: 500; display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.5rem;">📊</span>
+            Mapa Estratégico 2026
+        </h2>
+
+        <div style="display: grid; gap: 1rem;">
+
+            <!-- Nivel 1: Identidad / Salud / Sentido -->
+            <div
+                style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #6B7280; transition: transform 0.2s, box-shadow 0.2s;">
+                <div
+                    style="padding: 1.5rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center;">
+                    <div style="text-align: center; min-width: 80px;">
+                        <div
+                            style="font-size: 0.7rem; text-transform: uppercase; color: #6B7280; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                            Nivel</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #6B7280;">1</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
+                            Identidad / Salud / Sentido</div>
+                        <div style="font-size: 0.9rem; color: #6B7280; line-height: 1.5;">Base humana y emocional del
+                            sistema. Sostener equilibrio interno independientemente del rendimiento.</div>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #4B5563;">
+                            <strong>Metas:</strong> Estabilidad emocional · Vocación viva
+                        </div>
+                    </div>
+                    <div style="text-align: center; min-width: 140px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #FEF3C7; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #92400E;">
+                            <span
+                                style="display: inline-block; width: 10px; height: 10px; background: #F59E0B; border-radius: 50%;"></span>
+                            Mantenimiento
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nivel 2: Sostén Vital y Estabilidad -->
+            <div
+                style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #8B5CF6;">
+                <div
+                    style="padding: 1.5rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center;">
+                    <div style="text-align: center; min-width: 80px;">
+                        <div
+                            style="font-size: 0.7rem; text-transform: uppercase; color: #8B5CF6; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                            Nivel</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #8B5CF6;">2</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">Sostén
+                            Vital y Estabilidad</div>
+                        <div style="font-size: 0.9rem; color: #6B7280; line-height: 1.5;">Infraestructura de vida:
+                            trabajo, dinero y estatus legal como soporte, no identidad.</div>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #4B5563;">
+                            <strong>Metas:</strong> Hexagon estable · Migración · Finanzas
+                        </div>
+                    </div>
+                    <div style="text-align: center; min-width: 140px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #FEE2E2; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #991B1B;">
+                            <span
+                                style="display: inline-block; width: 10px; height: 10px; background: #EF4444; border-radius: 50%;"></span>
+                            Activo
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nivel 3: Capacidades y Talento Real -->
+            <div
+                style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #3B82F6;">
+                <div
+                    style="padding: 1.5rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center;">
+                    <div style="text-align: center; min-width: 80px;">
+                        <div
+                            style="font-size: 0.7rem; text-transform: uppercase; color: #3B82F6; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                            Nivel</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #3B82F6;">3</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
+                            Capacidades y Talento Real</div>
+                        <div style="font-size: 0.9rem; color: #6B7280; line-height: 1.5;">Alineación y consolidación de
+                            capacidades. Aprender con criterio, no por ansiedad.</div>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #4B5563;">
+                            <strong>Metas:</strong> Ruta aprendizaje · Credenciales Europa
+                        </div>
+                    </div>
+                    <div style="text-align: center; min-width: 140px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #DBEAFE; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #1E40AF;">
+                            <span
+                                style="display: inline-block; width: 10px; height: 10px; background: #3B82F6; border-radius: 50%;"></span>
+                            Observación
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nivel 4: Oferta al Mundo -->
+            <div
+                style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #10B981;">
+                <div
+                    style="padding: 1.5rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center;">
+                    <div style="text-align: center; min-width: 80px;">
+                        <div
+                            style="font-size: 0.7rem; text-transform: uppercase; color: #10B981; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                            Nivel</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #10B981;">4</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">Oferta
+                            al Mundo (Comercial / Profesional)</div>
+                        <div style="font-size: 0.9rem; color: #6B7280; line-height: 1.5;">Cómo pones tu talento al
+                            servicio del mercado con límites claros y sostenibles.</div>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #4B5563;">
+                            <strong>Metas:</strong> Oferta comercial clara · Pipeline activo
+                        </div>
+                    </div>
+                    <div style="text-align: center; min-width: 140px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #FEF3C7; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #92400E;">
+                            <span
+                                style="display: inline-block; width: 10px; height: 10px; background: #F59E0B; border-radius: 50%;"></span>
+                            Mantenimiento
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nivel 5: Sistemas, Organización y Soporte -->
+            <div
+                style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #F59E0B;">
+                <div
+                    style="padding: 1.5rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center;">
+                    <div style="text-align: center; min-width: 80px;">
+                        <div
+                            style="font-size: 0.7rem; text-transform: uppercase; color: #F59E0B; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                            Nivel</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #F59E0B;">5</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
+                            Sistemas, Organización y Soporte</div>
+                        <div style="font-size: 0.9rem; color: #6B7280; line-height: 1.5;">Organización personal y
+                            tecnológica al servicio de la estabilidad, no de la complejidad.</div>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #4B5563;">
+                            <strong>Meta:</strong> Sistemas simples y suficientes
+                        </div>
+                    </div>
+                    <div style="text-align: center; min-width: 140px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #F3F4F6; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #4B5563;">
+                            <span
+                                style="display: inline-block; width: 10px; height: 10px; background: #9CA3AF; border-radius: 50%;"></span>
+                            Latente
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nivel 6: Opciones Estratégicas Futuras -->
+            <div
+                style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 5px solid #EF4444;">
+                <div
+                    style="padding: 1.5rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.5rem; align-items: center;">
+                    <div style="text-align: center; min-width: 80px;">
+                        <div
+                            style="font-size: 0.7rem; text-transform: uppercase; color: #EF4444; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.25rem;">
+                            Nivel</div>
+                        <div style="font-size: 2rem; font-weight: 700; color: #EF4444;">6</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem;">
+                            Opciones Estratégicas Futuras</div>
+                        <div style="font-size: 0.9rem; color: #6B7280; line-height: 1.5;">Mantener opciones abiertas sin
+                            presión ni ejecución anticipada.</div>
+                        <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #4B5563;">
+                            <strong>Metas:</strong> Opción Europa · Proyecto salud mental
+                        </div>
+                    </div>
+                    <div style="text-align: center; min-width: 140px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #FEF3C7; border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: #92400E;">
+                            <span
+                                style="display: inline-block; width: 10px; height: 10px; background: #F59E0B; border-radius: 50%;"></span>
+                            Mantenimiento
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leyenda de Modos -->
+        <div
+            style="margin-top: 2rem; padding: 1.5rem; background: #F9FAFB; border-radius: 8px; border: 1px solid #E5E7EB;">
+            <div style="font-size: 0.9rem; font-weight: 600; color: #4B5563; margin-bottom: 1rem;">Modos de Operación
+            </div>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.85rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span
+                        style="display: inline-block; width: 10px; height: 10px; background: #EF4444; border-radius: 50%;"></span>
+                    <span><strong>Activo:</strong> Tareas definidas, consume foco</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span
+                        style="display: inline-block; width: 10px; height: 10px; background: #F59E0B; border-radius: 50%;"></span>
+                    <span><strong>Mantenimiento:</strong> Opciones abiertas, micro-acciones</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span
+                        style="display: inline-block; width: 10px; height: 10px; background: #3B82F6; border-radius: 50%;"></span>
+                    <span><strong>Observación:</strong> Observar patrón, integrar sin forzar</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span
+                        style="display: inline-block; width: 10px; height: 10px; background: #9CA3AF; border-radius: 50%;"></span>
+                    <span><strong>Latente:</strong> Opción futura, revisión en ciclos largos</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contexto Operativo: 2 columnas -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+
+        <!-- Plan Diario Actual -->
+        <div
+            style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-top: 4px solid #3B82F6;">
+            <h3
+                style="margin: 0 0 1.25rem 0; font-size: 1.1rem; color: #1a1a1a; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                ⚡ Plan Diario Actual
+            </h3>
+
+            {% if state.plan_diario %}
+            {% if state.plan_diario.obligaciones %}
+            <div style="margin-bottom: 1.25rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.5rem; font-weight: 600;">
+                    Obligaciones</div>
+                <div
+                    style="padding: 1rem; background: #F9FAFB; border-radius: 6px; font-size: 0.9rem; line-height: 1.6; color: #374151; white-space: pre-wrap;">
+                    {{ state.plan_diario.obligaciones[:150] }}{% if state.plan_diario.obligaciones|length > 150 %}...{%
+                    endif %}</div>
+            </div>
+            {% endif %}
+
+            {% if state.plan_diario.tarea_ancla %}
+            <div style="margin-bottom: 1.25rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.5rem; font-weight: 600;">
+                    Tarea Ancla</div>
+                <div
+                    style="padding: 1rem; background: #EFF6FF; border-radius: 6px; border-left: 3px solid #3B82F6; font-size: 0.9rem; line-height: 1.6; color: #1E40AF; font-weight: 500;">
+                    {{ state.plan_diario.tarea_ancla }}</div>
+            </div>
+            {% endif %}
+            {% else %}
+            <p style="color: #9CA3AF; font-style: italic; margin-bottom: 1.5rem;">Aún no hay un plan diario registrado.
+            </p>
+            {% endif %}
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                <a href="/plantillas#plan-diario" class="btn"
+                    style="flex: 1; text-align: center; font-size: 0.85rem;">Crear Plan</a>
+                <a href="/bitacora/nueva" class="btn btn-outline"
+                    style="flex: 1; text-align: center; font-size: 0.85rem;">Ajuste</a>
+            </div>
+        </div>
+
+        <!-- Último Ajuste -->
+        <div
+            style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-top: 4px solid #8B5CF6;">
+            <h3
+                style="margin: 0 0 1.25rem 0; font-size: 1.1rem; color: #1a1a1a; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                📝 Último Ajuste del Sistema
+            </h3>
+
+            {% if state.ultimo_ajuste %}
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.75rem; color: #6B7280; margin-bottom: 0.5rem;">
+                    <strong>{{ state.ultimo_ajuste.timestamp }}</strong> — <em style="color: #8B5CF6;">{{
+                        state.ultimo_ajuste.tipo }}</em>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.5rem; font-weight: 600;">
+                    Qué cambió</div>
+                <div style="font-size: 0.9rem; line-height: 1.6; color: #374151;">{{
+                    state.ultimo_ajuste.que_cambio[:180] }}{% if state.ultimo_ajuste.que_cambio|length > 180 %}...{%
+                    endif %}</div>
+            </div>
+
+            <div>
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.5rem; font-weight: 600;">
+                    Por qué</div>
+                <div style="font-size: 0.9rem; line-height: 1.6; color: #374151;">{{ state.ultimo_ajuste.por_que[:180]
+                    }}{% if state.ultimo_ajuste.por_que|length > 180 %}...{% endif %}</div>
+            </div>
+            {% else %}
+            <p style="color: #9CA3AF; font-style: italic; margin-bottom: 1.5rem;">No hay registros en la bitácora.</p>
+            {% endif %}
+
+            <a href="/docs/bitacora" class="btn btn-outline"
+                style="display: block; text-align: center; margin-top: 1.5rem; font-size: 0.85rem;">Ver Bitácora
+                Completa</a>
+        </div>
+    </div>
+
+    <!-- Filosofía del Sistema -->
+    <div
+        style="background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%); padding: 2rem; border-radius: 12px; text-align: center; border: 1px solid #D1D5DB;">
+        <p
+            style="margin: 0; font-size: 1rem; line-height: 1.7; color: #374151; font-style: italic; max-width: 800px; margin: 0 auto;">
+            "Este sistema no maximiza resultados externos, <strong>maximiza sostenibilidad humana</strong>. El éxito en
+            2026 no es cumplir todo, sino: estabilidad sostenida, continuidad sin colapsos, vocación viva sin presión, y
+            opciones abiertas sin ansiedad."
+        </p>
+    </div>
+
+</div>
+{% endblock %}
