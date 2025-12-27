@@ -113,3 +113,18 @@ Tarea ancla: Entender flujo de resolucion de casos Hexagon - Flujo completo (Niv
 
 **Reactivo/Libre**
 Pensar ideas , escribirlas, expresion creativa en cualquiera de mis areas de interes
+
+
+## 2025-12-27 14:42
+**Tipo:** Plan Diario
+**Contenido:**
+**Obligaciones**
+- [ ] Tarea Registrable 1 (Registrable)
+- Nota Contexto 1
+
+
+**Estructural**
+
+
+**Reactivo/Libre**
+

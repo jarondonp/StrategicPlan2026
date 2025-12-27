@@ -173,8 +173,16 @@
             <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
                 Ej: "Reunión lunes 10am" / "Caso asignado por cliente"
             </small>
-            <textarea name="obligaciones" id="b1" style="min-height: 100px;"
-                placeholder="Reuniones, entregables con fecha hoy..."></textarea>
+            
+            <div id="obligaciones-container" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+                <!-- Rows will be added here -->
+            </div>
+            
+            <button type="button" class="btn btn-outline" onclick="addObligationRow()" style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                + Añadir obligación
+            </button>
+            
+            <input type="hidden" name="obligaciones" id="b1">
         </div>
 
         <div class="form-group"
@@ -211,14 +219,100 @@
 </div>
 
 <script>
+    // Initialize with one empty row
+    docReady(function() {
+        if (document.getElementById('obligaciones-container')) {
+            addObligationRow();
+        }
+    });
+
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    function addObligationRow(text = '', type = 'contexto') {
+        const container = document.getElementById('obligaciones-container');
+        const id = generateUUID();
+        
+        const row = document.createElement('div');
+        row.className = 'obligation-row';
+        row.dataset.id = id;
+        row.style.display = 'flex';
+        row.style.gap = '0.5rem';
+        row.style.alignItems = 'center';
+        
+        row.innerHTML = `
+            <input type="text" class="form-control obl-text" value="${text}" placeholder="Descripción..." style="flex: 1;">
+            <select class="form-control obl-type" style="width: auto; background-color: #f9fafb;">
+                <option value="contexto" ${type === 'contexto' ? 'selected' : ''}>Nota / Contexto</option>
+                <option value="registrable" ${type === 'registrable' ? 'selected' : ''}>Registrable</option>
+            </select>
+            <button type="button" class="btn btn-outline" onclick="removeObligationRow(this)" style="padding: 0.5rem; color: #EF4444; border-color: #EF4444;" title="Eliminar">
+                ✕
+            </button>
+        `;
+        
+        container.appendChild(row);
+        
+        // Focus new input if it's empty
+        if (!text) {
+           row.querySelector('input').focus();
+        }
+    }
+
+    function removeObligationRow(btn) {
+        btn.parentElement.remove();
+    }
+
+    function docReady(fn) {
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
     function composeDaily() {
-        const b1 = document.getElementById('b1').value;
+        // Collect Obligations
+        const rows = document.querySelectorAll('.obligation-row');
+        const obligationsList = [];
+        let obligationsMarkdown = '';
+
+        rows.forEach(row => {
+            const text = row.querySelector('.obl-text').value.trim();
+            const type = row.querySelector('.obl-type').value;
+            const id = row.dataset.id;
+            
+            if (text) {
+                const item = {
+                    id: id,
+                    texto: text,
+                    tipo: type
+                };
+                
+                if (type === 'registrable') {
+                    item.estado = 'pendiente';
+                    obligationsMarkdown += `- [ ] ${text} (Registrable)\n`;
+                } else {
+                    obligationsMarkdown += `- ${text}\n`;
+                }
+                
+                obligationsList.push(item);
+            }
+        });
+
+        const b1JSON = JSON.stringify(obligationsList);
+        document.getElementById('b1').value = b1JSON;
+
         const b2 = document.getElementById('b2').value;
         const b3 = document.getElementById('b3').value;
 
         // Formato limpio para la bitácora
         const text = `**Obligaciones**
-${b1}
+${obligationsMarkdown || '(Ninguna)'}
 
 **Estructural**
 ${b2}

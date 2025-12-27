@@ -106,6 +106,36 @@ def save_inventario(energia, claridad_frentes, ajuste_necesario):
     with open(inv_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+def update_obligation_status(item_id, status):
+    """Update the status of a specific obligation in the latest plan."""
+    plan_path = os.path.join(DATA_DIR, 'latest_plan.json')
+    if not os.path.exists(plan_path):
+        return False
+        
+    try:
+        with open(plan_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            
+        obligaciones = data.get('obligaciones')
+        if not isinstance(obligaciones, list):
+            return False
+            
+        found = False
+        for item in obligaciones:
+            if item.get('id') == item_id:
+                item['estado'] = status
+                found = True
+                break
+        
+        if found:
+            with open(plan_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            return True
+        return False
+    except Exception as e:
+        print(f"Error updating obligation: {e}")
+        return False
+
 def get_home_state():
     """
     Aggregate all data for homepage display.

@@ -1,5 +1,6 @@
 import os
 import datetime
+import json
 from flask import Flask, render_template, request, redirect, url_for, abort, jsonify
 import agent_service
 import data_service
@@ -93,7 +94,16 @@ def guardar_entrada():
     
     # Save templates to data service if applicable
     if tipo == 'Plan Diario' and obligaciones:
-        data_service.save_plan_diario(obligaciones, tarea_ancla or '', resto_dia or '')
+        # Try to parse obligations as JSON if it looks like it
+        try:
+            if obligaciones.startswith('[') or obligaciones.startswith('{'):
+                obligaciones_data = json.loads(obligaciones)
+            else:
+                obligaciones_data = obligaciones
+        except (json.JSONDecodeError, AttributeError):
+            obligaciones_data = obligaciones
+
+        data_service.save_plan_diario(obligaciones_data, tarea_ancla or '', resto_dia or '')
     elif tipo == 'Inventario Semanal' and energia:
         data_service.save_inventario(energia, claridad_frentes or '', ajuste_necesario or '')
     
@@ -126,6 +136,21 @@ def guardar_entrada():
         return render_template('success.html', message="Entrada guardada correctamente.")
     except Exception as e:
         return f"Error al guardar: {e}", 500
+
+@app.route('/api/obligacion/toggle', methods=['POST'])
+def toggle_obligation():
+    data = request.json
+    item_id = data.get('id')
+    status = data.get('status') # 'done', 'pending', 'omitted'
+    
+    if not item_id or not status:
+        return jsonify({'error': 'Missing id or status'}), 400
+        
+    success = data_service.update_obligation_status(item_id, status)
+    if success:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'error': 'Item not found'}), 404
 
 @app.route('/api/chat', methods=['POST'])
 def chat_endpoint():

@@ -303,11 +303,81 @@
                 <div
                     style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.5rem; font-weight: 600;">
                     Obligaciones</div>
+                {% if state.plan_diario.obligaciones is iterable and state.plan_diario.obligaciones is not string %}
+                <!-- Structured Obligations List -->
+                <div style="background: #F9FAFB; border-radius: 6px; overflow: hidden;">
+                    {% for item in state.plan_diario.obligaciones %}
+                    {% if item.tipo == 'registrable' %}
+                    <div
+                        style="padding: 0.75rem 1rem; border-bottom: 1px solid #E5E7EB; display: flex; align-items: flex-start; gap: 0.75rem;">
+                        <input type="checkbox" onchange="toggleObligation('{{ item.id }}', this.checked)" {% if
+                            item.estado=='hecho' %}checked{% endif %}
+                            style="margin-top: 0.35rem; cursor: pointer; width: 1.1rem; height: 1.1rem;">
+                        <span class="obl-text {% if item.estado == 'hecho' %}done{% endif %}"
+                            style="font-size: 0.95rem; color: #374151; line-height: 1.5;">{{ item.texto }}</span>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% for item in state.plan_diario.obligaciones %}
+                    {% if item.tipo == 'contexto' %}
+                    <div
+                        style="padding: 0.5rem 1rem 0.5rem 2.85rem; font-size: 0.9rem; color: #6B7280; font-style: italic;">
+                        {{ item.texto }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Legacy Text View -->
                 <div
                     style="padding: 1rem; background: #F9FAFB; border-radius: 6px; font-size: 0.9rem; line-height: 1.6; color: #374151; white-space: pre-wrap;">
                     {{ state.plan_diario.obligaciones[:150] }}{% if state.plan_diario.obligaciones|length > 150 %}...{%
                     endif %}</div>
+                {% endif %}
             </div>
+
+            <script>
+                function toggleObligation(id, isChecked) {
+                    const status = isChecked ? 'hecho' : 'pendiente';
+                    // Optimistic UI update
+                    const checkbox = event.target;
+                    const textSpan = checkbox.nextElementSibling;
+                    if (isChecked) {
+                        textSpan.style.textDecoration = 'line-through';
+                        textSpan.style.color = '#9CA3AF';
+                    } else {
+                        textSpan.style.textDecoration = 'none';
+                        textSpan.style.color = '#374151';
+                    }
+
+                    fetch('/api/obligacion/toggle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id: id, status: status }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.success) {
+                                // Revert on failure
+                                checkbox.checked = !isChecked;
+                                alert('Error al actualizar estado.');
+                            }
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            checkbox.checked = !isChecked;
+                        });
+                }
+            </script>
+            <style>
+                .obl-text.done {
+                    text-decoration: line-through;
+                    color: #9CA3AF !important;
+                }
+            </style>
             {% endif %}
 
             {% if state.plan_diario.tarea_ancla %}
