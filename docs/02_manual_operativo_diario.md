@@ -176,6 +176,28 @@ Incluye:
 
 ---
 
+## 5.2. Tipos de ítems en el Plan Diario (Funcionalidad Sistema)
+*(Estructura técnica)*
+
+Para proteger tu atención, el sistema digital ahora distingue dos tipos de entradas en el **Bloque 1: Obligaciones**:
+
+### A) Obligación Registrable ⬜
+*   **Qué es:** Una tarea concreta, binaria y cerrada. Se hace o no se hace.
+*   **Ejemplos:** "Enviar reporte Q3", "Reunión de 10am", "Pagar factura luz".
+*   **Comportamiento en sistema:** Aparece con un **checkbox** interactivo. Puedes marcarla como "Hecho".
+*   **Estado:** Persiste (se guarda si la marcaste).
+
+### B) Nota / Contexto (Solo texto)
+*   **Qué es:** Información relevante para el día que NO requiere una acción única de cierre, o que es solo recordatorio ambiental.
+*   **Ejemplos:** "Tener en cuenta feedback cliente", "Ambiente tenso en la oficina", "Esperar respuesta de X".
+*   **Comportamiento en sistema:** Aparece como **texto plano** (cursiva), sin checkbox.
+*   **Propósito:** Reducir el ruido visual. No todo es un "to-do".
+
+**Regla de uso:**
+Al crear tu plan, el sistema por defecto asume "Nota / Contexto". Solo cambia a "Registrable" si realmente necesitas la satisfacción o el control de marcar el check. **Ante la duda, déjalo como nota.**
+
+---
+
 ## 7. Reglas negativas (protección del sistema)
 
 Estas reglas existen para evitar recaer en el patrón antiguo.
