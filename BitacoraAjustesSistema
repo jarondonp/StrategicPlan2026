@@ -1,0 +1,168 @@
+Bitácora de Ajustes del Sistema
+Javier Rondón
+
+Versión: 1.0
+Estado: Activa
+Rol del documento: Registrar cambios y decisiones sin reabrir el sistema completo.
+
+1. Propósito de la bitácora
+
+Esta bitácora existe para contener los cambios del sistema sin que:
+
+se rediseñe todo cada semana
+
+se mezclen emociones con arquitectura
+
+se pierdan decisiones ya tomadas
+
+aparezca la tentación de “optimizarlo todo otra vez”
+
+👉 No es un diario emocional.
+👉 No es un registro de productividad.
+👉 No es un lugar para pensar el sistema.
+
+Es solo un registro sobrio de ajustes.
+
+2. Qué SÍ va en esta bitácora
+
+Se registra únicamente cuando ocurre alguna de estas situaciones:
+
+Se activa o desactiva una tarea ancla
+
+Se cambia el modo de un frente (activo → mantenimiento, etc.)
+
+Se detecta una regla que no funcionó y se ajusta
+
+Se aclara una ambigüedad del sistema
+
+Se toma una decisión estratégica relevante
+
+Ejemplos válidos:
+
+“Se cerró la tarea ancla de Hexagon; no se define otra por ahora.”
+
+“SLS pasa a mantenimiento activo; no hay tareas este mes.”
+
+“La planificación diaria se estaba volviendo rígida; se volvió a 3 bloques sin checklist.”
+
+3. Qué NO va en esta bitácora (muy importante)
+
+❌ Cómo te sentiste hoy
+❌ Todo lo que hiciste en el día
+❌ Ideas creativas
+❌ Reflexiones largas
+❌ Análisis existenciales
+❌ Nuevas metas “por si acaso”
+
+Si algo de esto aparece, no va aquí.
+Tiene otros lugares (terapia, cuaderno, reflexión personal).
+
+4. Formato de cada entrada (estricto)
+
+Cada entrada debe tener máximo 5 líneas.
+
+Plantilla fija
+## YYYY-MM-DD HH:MM
+
+Tipo: [Plan diario | Inventario semanal | Ajuste estratégico | Tarea ancla]
+
+Qué cambió:
+- (1–2 líneas, concreto)
+
+Por qué:
+- (1 línea, criterio)
+
+
+👉 No se permite texto largo.
+Si necesitas más, no es un ajuste: es reflexión (y va a otro lado).
+
+5. Dónde se escriben las entradas
+
+Siempre en el mismo documento
+
+En orden cronológico (elige:
+
+arriba si quieres ver lo último primero
+
+abajo si prefieres historial)
+
+👉 No se reorganiza.
+👉 No se limpia.
+👉 No se resume.
+
+La bitácora es memoria, no presentación.
+
+6. Frecuencia esperada
+
+Puede haber semanas sin ninguna entrada
+
+Puede haber meses con 2–3 entradas
+
+Si hay entradas diarias → alerta de sobrecontrol
+
+👉 La bitácora no se alimenta por rutina,
+solo por evento real.
+
+7. Regla de oro de la bitácora
+
+Si escribir aquí te genera alivio, está bien.
+Si escribir aquí te genera más pensamiento, para.
+
+La función es cerrar, no abrir.
+
+8. Cómo se usa junto a los otros documentos
+
+Documento 1 → marco estable
+
+Documento 2 → operación diaria
+
+Documento 3 → memoria de ajustes
+
+👉 Nunca se usan los tres al mismo tiempo.
+
+9. Señales de uso correcto
+
+Sabes que la bitácora está cumpliendo su función si:
+
+te evita reabrir decisiones viejas
+
+te recuerda por qué algo se decidió así
+
+reduce la necesidad de “volver a pensar todo”
+
+te permite seguir sin ansiedad
+
+10. Ejemplos reales de entradas
+Ejemplo 1
+## 2026-01-18 09:30
+
+Tipo: Tarea ancla
+
+Qué cambió:
+- Se completó el mapa de un caso real de Hexagon.
+
+Por qué:
+- La fragilidad de orientación disminuyó.
+
+Ejemplo 2
+## 2026-02-02 18:10
+
+Tipo: Ajuste estratégico
+
+Qué cambió:
+- Europa se mantiene en mantenimiento activo este trimestre.
+
+Por qué:
+- Nivel 2 aún requiere estabilidad.
+
+Cierre del Documento 3
+
+Esta bitácora existe para que el sistema:
+
+tenga memoria
+
+no dependa de tu estado emocional del día
+
+no se reinvente cada vez que dudas
+
+Si dudas de si algo va aquí, probablemente no va.

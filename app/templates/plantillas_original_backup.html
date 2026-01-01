@@ -333,6 +333,61 @@ ${b3}`;
     }
 
     // Load Previous Inventory Functionality
+    {% if inventario %}
+    (function () {
+        const btn = document.getElementById('load-prev-btn');
+        const loadContainer = document.getElementById('load-prev-container');
+        const warningBanner = document.getElementById('editing-warning');
+        const energiaField = document.getElementById('weekly-energia');
+        const claridadField = document.getElementById('weekly-claridad');
+        const ajusteField = document.getElementById('weekly-ajuste');
 
+        if (btn) {
+            btn.addEventListener('click', function () {
+                // Hide button container
+                loadContainer.style.display = 'none';
+
+                // Show warning banner
+                warningBanner.style.display = 'block';
+
+                // Pre-fill fields with previous inventory data (in gray/italic)
+                {% if inventario.energia %}
+                energiaField.value = {{ inventario.energia | tojson }
+            };
+            energiaField.style.color = '#9CA3AF';
+            energiaField.style.fontStyle = 'italic';
+            {% endif %}
+
+            {% if inventario.claridad_frentes %}
+            claridadField.value = {{ inventario.claridad_frentes | tojson }
+        };
+        claridadField.style.color = '#9CA3AF';
+        claridadField.style.fontStyle = 'italic';
+        {% endif %}
+
+        {% if inventario.ajuste_necesario %}
+        ajusteField.value = {{ inventario.ajuste_necesario | tojson }
+    };
+    ajusteField.style.color = '#9CA3AF';
+    ajusteField.style.fontStyle = 'italic';
+    {% endif %}
+
+    // Add event listeners to change style when user edits
+    const fields = [energiaField, claridadField, ajusteField];
+    fields.forEach(field => {
+        if (field) {
+            field.addEventListener('input', function () {
+                this.style.color = '#1a1a1a';
+                this.style.fontStyle = 'normal';
+            }, { once: true });
+        }
+    });
+
+    // Scroll to first field
+    energiaField.focus();
+            });
+        }
+    }) ();
+    {% endif %}
 </script>
 {% endblock %}

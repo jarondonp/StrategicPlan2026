@@ -128,3 +128,20 @@ Pensar ideas , escribirlas, expresion creativa en cualquiera de mis areas de int
 
 **Reactivo/Libre**
 
+
+
+## 2026-01-01 18:08
+**Tipo:** Plan Diario
+**Contenido:**
+**Obligaciones**
+- [ ] cerrar casos(2) hexagon WO (Registrable)
+- [ ] Completar sql para insert de ultimo WO (Registrable)
+- Definir ruta desarrollo para sitema de control financiero
+- Completar registro de primeras cuentas  para cerrar mes de diciembre 2025
+
+
+**Estructural**
+documentar llenado de casos remedy a aprtir de ultima reunion con Huber
+
+**Reactivo/Libre**
+

@@ -1,18 +1,29 @@
 {
-  "timestamp": "2025-12-27 14:42",
+  "timestamp": "2026-01-01 18:08",
   "obligaciones": [
     {
-      "id": "43bc77ff-9760-4672-9b78-73386119b77c",
-      "texto": "Tarea Registrable 1",
+      "id": "e5c5dfc4-c040-4398-95b7-728bfcf5fa83",
+      "texto": "cerrar casos(2) hexagon WO",
       "tipo": "registrable",
-      "estado": "hecho"
+      "estado": "pendiente"
     },
     {
-      "id": "0939ec15-bd08-4a36-8b6a-bc141e30460b",
-      "texto": "Nota Contexto 1",
+      "id": "7b4477f9-cfe4-4ba1-bbb9-ff5050592cd8",
+      "texto": "Completar sql para insert de ultimo WO",
+      "tipo": "registrable",
+      "estado": "pendiente"
+    },
+    {
+      "id": "fb7a9efc-5e39-44cf-82a9-3cf66113e876",
+      "texto": "Definir ruta desarrollo para sitema de control financiero",
+      "tipo": "contexto"
+    },
+    {
+      "id": "e36cdfa3-447c-4281-9971-4061deb648f8",
+      "texto": "Completar registro de primeras cuentas  para cerrar mes de diciembre 2025",
       "tipo": "contexto"
     }
   ],
-  "tarea_ancla": "",
+  "tarea_ancla": "documentar llenado de casos remedy a aprtir de ultima reunion con Huber",
   "resto_dia": ""
 }
