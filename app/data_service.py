@@ -345,3 +345,95 @@ def get_ultimo_ajuste():
         # Si falla, intentar parsear de la bitácora
         return parse_bitacora()
 
+
+# ============================================================================
+# Funciones para visualización de bitácora
+# ============================================================================
+
+def obtener_entradas_bitacora_estructuradas():
+    """
+    Parsea el archivo de bitácora y retorna todas las entradas estructuradas.
+    
+    Returns:
+        list: Lista de diccionarios con entradas ordenadas (más reciente primero)
+        
+    Estructura de cada entrada:
+        {
+            'timestamp': '2026-01-01 19:17',
+            'tipo': 'Plan Diario — Ajuste',
+            'campos': {
+                'que_cambio': '...',
+                'por_que': '...',
+                'contenido': '...',
+                # ... otros campos según el tipo
+            },
+            'contenido_completo': '...'  # Para búsqueda
+        }
+    """
+    if not os.path.exists(BITACORA_PATH):
+        return []
+    
+    with open(BITACORA_PATH, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # Encontrar todas las entradas con pattern ## YYYY-MM-DD HH:MM
+    entry_pattern = r'## (\d{4}-\d{2}-\d{2} \d{2}:\d{2})(.*?)(?=\n## \d{4}-\d{2}-\d{2}|\Z)'
+    matches = list(re.finditer(entry_pattern, content, re.DOTALL))
+    
+    entradas = []
+    
+    for match in matches:
+        timestamp = match.group(1).strip()
+        entry_content = match.group(2).strip()
+        
+        # Extraer campos comunes
+        tipo_match = re.search(r'\*\*Tipo:\*\*\s*(.+?)(?:\n|$)', entry_content)
+        tipo = tipo_match.group(1).strip() if tipo_match else 'Sin especificar'
+        
+        # Extraer todos los campos posibles
+        campos = {}
+        
+        # Campos para ajustes de plan
+        que_cambio_match = re.search(r'\*\*Qué cambió:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if que_cambio_match:
+            campos['que_cambio'] = que_cambio_match.group(1).strip()
+        
+        por_que_match = re.search(r'\*\*Por qué:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if por_que_match:
+            campos['por_que'] = por_que_match.group(1).strip()
+        
+        plan_resultante_match = re.search(r'\*\*Plan resultante:\*\*\s*(.+?)(?:\n---|\Z)', entry_content, re.DOTALL)
+        if plan_resultante_match:
+            campos['plan_resultante'] = plan_resultante_match.group(1).strip()
+        
+        # Campos para inventario semanal
+        energia_match = re.search(r'\*\*Energía/Estado:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if energia_match:
+            campos['energia'] = energia_match.group(1).strip()
+        
+        claridad_match = re.search(r'\*\*Claridad de Frentes:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if claridad_match:
+            campos['claridad_frentes'] = claridad_match.group(1).strip()
+        
+        ajuste_match = re.search(r'\*\*Ajuste Necesario:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if ajuste_match:
+            campos['ajuste_necesario'] = ajuste_match.group(1).strip()
+        
+        # Campos para plan diario
+        contenido_match = re.search(r'\*\*Contenido:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if contenido_match:
+            campos['contenido'] = contenido_match.group(1).strip()
+        
+        # Crear entrada estructurada
+        entrada = {
+            'timestamp': timestamp,
+            'tipo': tipo,
+            'campos': campos,
+            'contenido_completo': entry_content.lower()  # Para búsqueda
+        }
+        
+        entradas.append(entrada)
+    
+    # Retornar en orden inverso (más reciente primero)
+    return list(reversed(entradas))
+

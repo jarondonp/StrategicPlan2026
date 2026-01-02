@@ -1,0 +1,405 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <h1>Bitácora de Ajustes del Sistema</h1>
+    <p class="meta-text">
+        Registro cronológico de todos los ajustes y decisiones del sistema
+    </p>
+</div>
+
+{# ============================================================ #}
+{# Barra de Filtros #}
+{# ============================================================ #}
+<div class="filter-bar"
+    style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 2rem;">
+    <div
+        style="display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 1rem; align-items: end; margin-bottom: 1rem;">
+        <div class="form-group" style="margin-bottom: 0;">
+            <label
+                style="font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">🔍
+                Buscar</label>
+            <input type="text" id="search-text" placeholder="Buscar en entradas..."
+                style="width: 100%; padding: 0.75rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label
+                style="font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">📅
+                Desde</label>
+            <input type="date" id="filter-date-from" style="width: 100%; padding: 0.75rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label
+                style="font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">📅
+                Hasta</label>
+            <input type="date" id="filter-date-to" style="width: 100%; padding: 0.75rem;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label
+                style="font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem; display: block;">🏷️
+                Tipo</label>
+            <select id="filter-tipo" style="width: 100%; padding: 0.75rem;">
+                <option value="">Todos los tipos</option>
+                <option value="Sistema — Funcionalidades">Sistema — Funcionalidades</option>
+                <option value="Plan Diario — Ajuste">Plan Diario — Ajuste</option>
+                <option value="Plan Diario">Plan Diario</option>
+                <option value="Inventario Semanal">Inventario Semanal</option>
+                <option value="Ajuste estratégico">Ajuste Estratégico</option>
+                <option value="Otro">Otro</option>
+            </select>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <button id="clear-filters" class="btn btn-outline" style="font-size: 0.85rem;">
+            Limpiar Filtros
+        </button>
+        <span id="results-count" style="font-size: 0.9rem; color: #6B7280; font-weight: 500;">
+            Mostrando {{ entradas|length }} entradas
+        </span>
+    </div>
+</div>
+
+{# ============================================================ #}
+{# Contenedor de Entradas #}
+{# ============================================================ #}
+<div class="bitacora-container" id="entries-container">
+    {% for entrada in entradas %}
+    <div class="bitacora-entry" data-tipo="{{ entrada.tipo }}" data-fecha="{{ entrada.timestamp }}"
+        data-contenido="{{ entrada.contenido_completo }}">
+
+        {# Header con tipo, fecha #}
+        <div class="entry-header entry-tipo-{{ entrada.tipo | replace(' ', '-') | replace('—', '') | lower }}">
+            <span class="entry-icon">{% if entrada.tipo == 'Sistema — Funcionalidades' %}🔧{% elif entrada.tipo == 'Plan
+                Diario — Ajuste' %}🔄{% elif entrada.tipo == 'Plan Diario' %}⚡{% elif entrada.tipo == 'Inventario
+                Semanal' %}📝{% elif entrada.tipo == 'Ajuste estratégico' %}🎯{% else %}📌{% endif %}</span>
+            <span class="entry-tipo-text">{{ entrada.tipo }}</span>
+            <span class="entry-fecha">{{ entrada.timestamp }}</span>
+        </div>
+
+        {# Contenido según tipo de entrada #}
+        <div class="entry-body">
+
+            {# Plan Diario - Ajuste #}
+            {% if entrada.campos.que_cambio %}
+            <div class="entry-section">
+                <div class="section-label">QUÉ CAMBIÓ</div>
+                <div class="section-content">
+                    {{ entrada.campos.que_cambio | safe }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if entrada.campos.por_que %}
+            <div class="entry-section">
+                <div class="section-label">POR QUÉ</div>
+                <div class="section-content">
+                    {{ entrada.campos.por_que }}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if entrada.campos.plan_resultante %}
+            <details class="entry-details">
+                <summary
+                    style="cursor: pointer; font-weight: 600; color: #6B7280; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.5rem 0;">
+                    ▸ Plan Resultante
+                </summary>
+                <div class="section-content"
+                    style="margin-top: 0.5rem; padding-left: 1rem; border-left: 3px solid #E5E7EB;">
+                    <pre
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.plan_resultante }}</pre>
+                </div>
+            </details>
+            {% endif %}
+
+            {# Inventario Semanal #}
+            {% if entrada.campos.energia %}
+            <div class="entry-section">
+                <div class="section-label">ENERGÍA / ESTADO</div>
+                <div class="section-content">
+                    <pre
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.energia }}</pre>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if entrada.campos.claridad_frentes %}
+            <div class="entry-section">
+                <div class="section-label">CLARIDAD DE FRENTES</div>
+                <div class="section-content">
+                    <pre
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.claridad_frentes }}</pre>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if entrada.campos.ajuste_necesario %}
+            <div class="entry-section">
+                <div class="section-label">AJUSTE NECESARIO</div>
+                <div class="section-content">
+                    <pre
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.ajuste_necesario }}</pre>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Plan Diario (contenido simple) #}
+            {% if entrada.campos.contenido %}
+            <div class="entry-section">
+                <div class="section-label">CONTENIDO</div>
+                <div class="section-content">
+                    <pre
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.contenido }}</pre>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{# Mensaje cuando no hay resultados #}
+<div id="no-results" class="hidden"
+    style="text-align: center; padding: 3rem; background: #F9FAFB; border-radius: 12px; border: 2px dashed #D1D5DB;">
+    <p style="font-size: 1.1rem; color: #6B7280; margin: 0;">
+        🔍 No se encontraron entradas con los filtros aplicados
+    </p>
+    <button onclick="document.getElementById('clear-filters').click()" class="btn btn-outline"
+        style="margin-top: 1rem;">
+        Limpiar Filtros
+    </button>
+</div>
+
+{# ============================================================ #}
+{# Estilos CSS #}
+{# ============================================================ #}
+<style>
+    /* Contenedor general */
+    .bitacora-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    /* Tarjeta de entrada */
+    .bitacora-entry {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .bitacora-entry:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    /* Header de entrada con colores por tipo */
+    .entry-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #E5E7EB;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+        border-left: 4px solid;
+    }
+
+    /* Colores por tipo de ajuste */
+    .entry-tipo-sistema-funcionalidades {
+        border-left-color: #EC4899;
+    }
+
+    .entry-tipo-plan-diario-ajuste {
+        border-left-color: #3B82F6;
+    }
+
+    .entry-tipo-plan-diario {
+        border-left-color: #10B981;
+    }
+
+    .entry-tipo-inventario-semanal {
+        border-left-color: #F59E0B;
+    }
+
+    .entry-tipo-ajuste-estratégico {
+        border-left-color: #8B5CF6;
+    }
+
+    .entry-tipo-otro {
+        border-left-color: #6B7280;
+    }
+
+    .entry-icon {
+        font-size: 1.5rem;
+    }
+
+    .entry-tipo-text {
+        flex: 1;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #1F2937;
+    }
+
+    .entry-fecha {
+        font-size: 0.85rem;
+        color: #6B7280;
+        font-weight: 500;
+    }
+
+    /* Cuerpo de la entrada */
+    .entry-body {
+        padding: 1.5rem;
+    }
+
+    .entry-section {
+        margin-bottom: 1.25rem;
+    }
+
+    .entry-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6B7280;
+        margin-bottom: 0.5rem;
+    }
+
+    .section-content {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #374151;
+    }
+
+    .section-content ul {
+        margin: 0;
+        padding-left: 1.5rem;
+    }
+
+    .section-content li {
+        margin-bottom: 0.25rem;
+    }
+
+    /* Details (colapsable) */
+    details summary {
+        user-select: none;
+    }
+
+    details[open] summary {
+        margin-bottom: 0.5rem;
+    }
+
+    details[open] summary::before {
+        content: "▾ ";
+    }
+
+    details:not([open]) summary::before {
+        content: "▸ ";
+    }
+
+    /* Clase helper */
+    .hidden {
+        display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .filter-bar {
+            padding: 1rem !important;
+        }
+
+        .filter-bar>div:first-child {
+            grid-template-columns: 1fr !important;
+        }
+
+        .entry-header {
+            flex-wrap: wrap;
+        }
+
+        .entry-fecha {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+
+{# ============================================================ #}
+{# JavaScript para Filtros #}
+{# ============================================================ #}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-text');
+        const dateFromInput = document.getElementById('filter-date-from');
+        const dateToInput = document.getElementById('filter-date-to');
+        const tipoSelect = document.getElementById('filter-tipo');
+        const clearButton = document.getElementById('clear-filters');
+        const resultsCount = document.getElementById('results-count');
+        const noResults = document.getElementById('no-results');
+
+        // Aplicar filtros cuando cambie cualquier input
+        searchInput.addEventListener('input', aplicarFiltros);
+        dateFromInput.addEventListener('change', aplicarFiltros);
+        dateToInput.addEventListener('change', aplicarFiltros);
+        tipoSelect.addEventListener('change', aplicarFiltros);
+
+        // Limpiar filtros
+        clearButton.addEventListener('click', function () {
+            searchInput.value = '';
+            dateFromInput.value = '';
+            dateToInput.value = '';
+            tipoSelect.value = '';
+            aplicarFiltros();
+        });
+
+        function aplicarFiltros() {
+            const searchText = searchInput.value.toLowerCase().trim();
+            const dateFrom = dateFromInput.value;
+            const dateTo = dateToInput.value;
+            const tipo = tipoSelect.value;
+
+            const entries = document.querySelectorAll('.bitacora-entry');
+            let visibleCount = 0;
+
+            entries.forEach(entry => {
+                const entryTipo = entry.getAttribute('data-tipo');
+                const entryFecha = entry.getAttribute('data-fecha');
+                const entryContenido = entry.getAttribute('data-contenido');
+
+                // Filtro de búsqueda de texto
+                const matchesSearch = !searchText ||
+                    entryContenido.includes(searchText) ||
+                    entryTipo.toLowerCase().includes(searchText);
+
+                // Filtro de rango de fechas
+                const matchesDateFrom = !dateFrom || entryFecha >= dateFrom;
+                const matchesDateTo = !dateTo || entryFecha <= dateTo + ' 23:59';
+
+                // Filtro de tipo
+                const matchesTipo = !tipo || entryTipo === tipo;
+
+                // Combinar todos los filtros (AND)
+                const matches = matchesSearch && matchesDateFrom && matchesDateTo && matchesTipo;
+
+                entry.style.display = matches ? 'block' : 'none';
+                if (matches) visibleCount++;
+            });
+
+            // Actualizar contador
+            resultsCount.textContent = `Mostrando ${visibleCount} entradas`;
+
+            // Mostrar/ocultar mensaje de "sin resultados"
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    });
+</script>
+
+{% endblock %}

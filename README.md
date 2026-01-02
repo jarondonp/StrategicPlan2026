@@ -33,3 +33,16 @@ Esta es una aplicación web minimalista y local para la gestión de documentos e
 - `docs/`: Contiene tus archivos Markdown (la fuente de verdad).
 - `app/`: Código de la aplicación.
 - `app/server.py`: El servidor web.
+
+## Bitácora de Ajustes
+
+La aplicación mantiene un registro histórico de decisiones del sistema en `docs/03_bitacora_ajustes.md`.
+
+**Qué se registra:**
+- Plan Diario creado
+- Plan Diario ajustado (con contexto del cambio)
+- Inventario Semanal
+- Ajustes estratégicos
+- Cambios al sistema/funcionalidades
+
+**Visualización:** La bitácora se puede consultar en `/docs/bitacora` con filtros por tipo, fecha y búsqueda de texto.

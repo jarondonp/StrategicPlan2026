@@ -36,6 +36,12 @@ def view_doc(doc_id):
     if doc_id not in DOC_FILES:
         abort(404)
     
+    # Caso especial: Bitácora usa vista estructurada
+    if doc_id == 'bitacora':
+        entradas = data_service.obtener_entradas_bitacora_estructuradas()
+        return render_template('bitacora_viewer.html', entradas=entradas)
+    
+    # Otros documentos: vista markdown tradicional
     filename = DOC_FILES[doc_id]
     filepath = os.path.join(DOCS_DIR, filename)
     

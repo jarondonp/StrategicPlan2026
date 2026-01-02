@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-01-01 19:17",
-  "tipo": "Plan Diario — Ajuste",
-  "que_cambio": "<ul style='margin: 0; padding-left: 1.5rem;'><li>Modificada obligación: 'cerrar casos(2) hexagon WO' → 'cerrar casos(2) hexagon WO , columna adicional y fecha null'</li></ul>",
-  "por_que": "mayor detalle de las obligaciones para no olvidar de que casos  WO se tratan especificamente"
+  "timestamp": "2026-01-01 19:44",
+  "tipo": "Sistema — Funcionalidades",
+  "que_cambio": "<ul style='margin: 0; padding-left: 1.5rem;'><li>Implementado diseño profesional con tarjetas y colores diferenciados por tipo</li><li>Añadido sistema de filtros interactivos (búsqueda de texto, rango de fechas, tipo de ajuste)</li><li>Invertido orden cronológico (entradas más recientes aparecen primero)</li><li>Creado nuevo tipo de ajuste \"Sistema — Funcionalidades\" con color rosa/magenta</li><li>Parseo estructurado de bitácora para mejor presentación</li></ul>",
+  "por_que": "La bitácora anterior era difícil de leer y navegar. Presentaba todo el markdown sin formato, sin separación visual entre entradas, y mostraba las entradas antiguas primero. Necesitábamos una vista profesional que facilitara la búsqueda y comprensión del historial de cambios del sistema."
 }

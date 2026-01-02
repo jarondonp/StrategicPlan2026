@@ -172,3 +172,35 @@ documentar llenado de casos remedy a aprtir de ultima reunion con Huber
 
 ---
 
+
+## 2026-01-01 19:44 — Rediseño Bitácora
+
+**Tipo:** Sistema — Funcionalidades
+
+**Qué cambió:**
+- Implementado diseño profesional con tarjetas y colores diferenciados por tipo
+- Añadido sistema de filtros interactivos (búsqueda de texto, rango de fechas, tipo de ajuste)
+- Invertido orden cronológico (entradas más recientes aparecen primero)
+- Creado nuevo tipo de ajuste "Sistema — Funcionalidades" con color rosa/magenta
+- Parseo estructurado de bitácora para mejor presentación
+
+**Por qué:**
+La bitácora anterior era difícil de leer y navegar. Presentaba todo el markdown sin formato, sin separación visual entre entradas, y mostraba las entradas antiguas primero (requiriendo scroll hasta el final para ver lo último). Necesitábamos una vista profesional que facilitara la búsqueda y comprensión del historial de cambios del sistema.
+
+**Archivos modificados/creados:**
+- app/templates/bitacora_viewer.html (nuevo, ~380 líneas)
+- app/data_service.py (+95 líneas, función obtener_entradas_bitacora_estructuradas)
+- app/server.py (+7 líneas, detección especial para ruta bitácora)
+
+**Funcionalidades:**
+1. Tarjetas visuales con colores por tipo: Sistema-Funcionalidades (rosa), Plan Diario-Ajuste (azul), Plan Diario (verde), Inventario Semanal (amarillo), Ajuste Estratégico (morado)
+2. Filtro de búsqueda de texto en todo el contenido
+3. Filtro por rango de fechas (desde/hasta)
+4. Filtro por tipo de ajuste
+5. Contador de resultados dinámico
+6. Botón limpiar filtros
+7. Diseño responsive (móvil y desktop)
+8. Efectos hover en tarjetas
+
+---
+
