@@ -145,3 +145,30 @@ documentar llenado de casos remedy a aprtir de ultima reunion con Huber
 
 **Reactivo/Libre**
 
+
+## 2026-01-01 19:17 — Plan Diario (Ajuste)
+
+**Tipo:** Plan Diario — Ajuste
+
+**Qué cambió:**
+<ul style='margin: 0; padding-left: 1.5rem;'><li>Modificada obligación: 'cerrar casos(2) hexagon WO' → 'cerrar casos(2) hexagon WO , columna adicional y fecha null'</li></ul>
+
+**Por qué:**
+mayor detalle de las obligaciones para no olvidar de que casos  WO se tratan especificamente
+
+**Plan resultante:**
+
+*Obligaciones*
+- ☐ cerrar casos(2) hexagon WO , columna adicional y fecha null (Registrable)
+- ☐ Completar sql para insert de ultimo WO (Registrable)
+  - Definir ruta desarrollo para sitema de control financiero (Contexto)
+  - Completar registro de primeras cuentas  para cerrar mes de diciembre 2025 (Contexto)
+
+*Estructural*
+documentar llenado de casos remedy a aprtir de ultima reunion con Huber
+
+*Reactivo/Libre*
+(Sin especificar)
+
+---
+

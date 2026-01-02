@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-01-01 18:08",
+  "timestamp": "2026-01-01 19:17",
   "obligaciones": [
     {
       "id": "e5c5dfc4-c040-4398-95b7-728bfcf5fa83",
-      "texto": "cerrar casos(2) hexagon WO",
+      "texto": "cerrar casos(2) hexagon WO , columna adicional y fecha null",
       "tipo": "registrable",
       "estado": "pendiente"
     },

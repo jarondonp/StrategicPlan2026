@@ -1,0 +1,6 @@
+{
+  "timestamp": "2026-01-01 19:17",
+  "tipo": "Plan Diario — Ajuste",
+  "que_cambio": "<ul style='margin: 0; padding-left: 1.5rem;'><li>Modificada obligación: 'cerrar casos(2) hexagon WO' → 'cerrar casos(2) hexagon WO , columna adicional y fecha null'</li></ul>",
+  "por_que": "mayor detalle de las obligaciones para no olvidar de que casos  WO se tratan especificamente"
+}

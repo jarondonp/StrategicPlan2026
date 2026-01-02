@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+    <h1>Ajustar Plan Diario de Hoy</h1>
+    <p class="meta-text">
+        Modifica tu plan según lo que haya cambiado. Es normal ajustar, no es fracaso.
+    </p>
+</div>
+
+<form action="/api/guardar-ajuste-plan" method="POST" id="form-ajuste-plan">
+
+    {# ============================================================ #}
+    {# SECCIÓN: OBLIGACIONES REALES #}
+    {# ============================================================ #}
+    <div class="form-group">
+        <label>1. Obligaciones Reales (Ya existen)</label>
+        <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
+            Modifica, añade o elimina obligaciones según sea necesario
+        </small>
+
+        <div id="obligaciones-container"
+            style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+            {# Las obligaciones se cargan aquí desde JavaScript o Jinja2 #}
+            {% if obligaciones %}
+            {% for obl in obligaciones %}
+            <div class="obligation-row" data-id="{{ obl.id }}">
+                <input type="text" class="obl-text" value="{{ obl.texto }}" placeholder="Descripción..."
+                    style="flex: 1; padding: 0.5rem;">
+                <select class="obl-type" style="width: auto; background-color: #f9fafb; padding: 0.5rem;">
+                    <option value="contexto" {% if obl.tipo=='contexto' %}selected{% endif %}>Nota / Contexto</option>
+                    <option value="registrable" {% if obl.tipo=='registrable' %}selected{% endif %}>Registrable</option>
+                </select>
+                <button type="button" class="btn btn-outline" onclick="eliminarObligacion(this)"
+                    style="padding: 0.5rem; color: #EF4444; border-color: #EF4444;" title="Eliminar">
+                    ✕
+                </button>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+
+        <button type="button" class="btn btn-outline" onclick="anadirObligacion()"
+            style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+            + Añadir obligación
+        </button>
+
+        {# Campo oculto que contendrá el JSON de obligaciones #}
+        <input type="hidden" name="obligaciones" id="obligaciones-json">
+    </div>
+
+    {# ============================================================ #}
+    {# SECCIÓN: TAREA ESTRUCTURAL #}
+    {# ============================================================ #}
+    <div class="form-group"
+        style="background: #F3F4F6; padding: 1.5rem; border-radius: 4px; border: 2px dashed #9CA3AF;">
+        <label style="color: #EF4444;">2. Tarea Estructural (Máximo 1 — SOLO UNA)</label>
+        <small style="display: block; color: #666; margin-bottom: 0.5rem; font-style: italic;">
+            Puedes cambiarla o dejarla vacía si necesitas reducir carga
+        </small>
+        <input type="text" name="tarea_ancla" id="tarea_ancla" value="{{ tarea_ancla }}"
+            placeholder="Opcional. Solo si hay capacidad." style="padding: 1.2rem;">
+    </div>
+
+    {# ============================================================ #}
+    {# SECCIÓN: ESPACIO REACTIVO #}
+    {# ============================================================ #}
+    <div class="form-group">
+        <label>3. Espacio Reactivo / Libre</label>
+        <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
+            No se planifica. Acepta que existirá.
+        </small>
+        <textarea name="resto_dia" id="resto_dia" style="min-height: 100px;"
+            placeholder="Responder mensajes, imprevistos, descanso...">{{ resto_dia }}</textarea>
+    </div>
+
+    {# ============================================================ #}
+    {# SECCIÓN: CONTEXTO DEL AJUSTE #}
+    {# ============================================================ #}
+    <div class="form-group"
+        style="background: #FEF3C7; padding: 1.5rem; border-radius: 4px; border-left: 4px solid #F59E0B;">
+        <label style="color: #92400E; font-weight: 600;">⚠️ ¿Por qué estás ajustando el plan?</label>
+        <small style="display: block; color: #92400E; margin-bottom: 0.5rem; font-style: italic;">
+            Sé específico y reflexivo (mínimo 20 caracteres, máximo 300)
+        </small>
+        <textarea name="por_que" id="por_que" required minlength="20" maxlength="300"
+            style="min-height: 100px; border: 2px solid #F59E0B;"
+            placeholder="Ej: Surgió una tarea urgente del cliente que requiere atención inmediata. Decidí eliminar la tarea ancla para mantener estabilidad."></textarea>
+        <small id="char-counter" style="display: block; margin-top: 0.5rem; color: #92400E; font-size: 0.85rem;">
+            0 / 300 caracteres
+        </small>
+    </div>
+
+    {# ============================================================ #}
+    {# BOTONES DE ACCIÓN #}
+    {# ============================================================ #}
+    <div style="display: flex; gap: 1rem; align-items: center; margin-top: 2rem;">
+        <a href="/" class="btn btn-outline">Cancelar</a>
+        <button type="submit" class="btn" id="btn-guardar">Guardar Ajuste</button>
+    </div>
+</form>
+
+{# ============================================================ #}
+{# JAVASCRIPT - Separado completamente de Jinja2 #}
+{# ============================================================ #}
+<script>
+    // ============================================================================
+    // Inicialización
+    // ============================================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        // Si no hay obligaciones pre-cargadas, añadir una fila vacía
+        const container = document.getElementById('obligaciones-container');
+        if (container.children.length === 0) {
+            anadirObligacion();
+        }
+
+        // Contador de caracteres para "Por qué"
+        const porQueTextarea = document.getElementById('por_que');
+        const charCounter = document.getElementById('char-counter');
+
+        porQueTextarea.addEventListener('input', function () {
+            const length = this.value.length;
+            charCounter.textContent = `${length} / 300 caracteres`;
+
+            if (length < 20) {
+                charCounter.style.color = '#EF4444';
+            } else {
+                charCounter.style.color = '#10B981';
+            }
+        });
+
+        // Al enviar el formulario, serializar obligaciones a JSON
+        document.getElementById('form-ajuste-plan').addEventListener('submit', function (e) {
+            serializarObligaciones();
+        });
+    });
+
+    // ============================================================================
+    // Funciones para gestionar obligaciones
+    // ============================================================================
+
+    function anadirObligacion() {
+        const container = document.getElementById('obligaciones-container');
+        const id = generarUUID();
+
+        const row = document.createElement('div');
+        row.className = 'obligation-row';
+        row.setAttribute('data-id', id);
+        row.style.display = 'flex';
+        row.style.gap = '0.5rem';
+        row.style.alignItems = 'center';
+
+        row.innerHTML = `
+        <input type="text" class="obl-text" placeholder="Descripción..." style="flex: 1; padding: 0.5rem;">
+        <select class="obl-type" style="width: auto; background-color: #f9fafb; padding: 0.5rem;">
+            <option value="contexto">Nota / Contexto</option>
+            <option value="registrable">Registrable</option>
+        </select>
+        <button type="button" class="btn btn-outline" onclick="eliminarObligacion(this)" 
+                style="padding: 0.5rem; color: #EF4444; border-color: #EF4444;" title="Eliminar">
+            ✕
+        </button>
+    `;
+
+        container.appendChild(row);
+
+        // Enfocar el nuevo input
+        row.querySelector('.obl-text').focus();
+    }
+
+    function eliminarObligacion(btn) {
+        btn.closest('.obligation-row').remove();
+    }
+
+    function serializarObligaciones() {
+        const rows = document.querySelectorAll('.obligation-row');
+        const obligaciones = [];
+
+        rows.forEach(row => {
+            const texto = row.querySelector('.obl-text').value.trim();
+            const tipo = row.querySelector('.obl-type').value;
+            const id = row.getAttribute('data-id');
+
+            if (texto) {
+                obligaciones.push({
+                    id: id,
+                    texto: texto,
+                    tipo: tipo,
+                    estado: tipo === 'registrable' ? 'pendiente' : undefined
+                });
+            }
+        });
+
+        document.getElementById('obligaciones-json').value = JSON.stringify(obligaciones);
+    }
+
+    function generarUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0;
+            var v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+</script>
+
+<style>
+    .obligation-row {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .obligation-row .obl-text {
+        flex: 1;
+    }
+</style>
+
+{% endblock %}

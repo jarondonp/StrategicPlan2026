@@ -144,5 +144,204 @@ def get_home_state():
     return {
         'plan_diario': get_latest_plan_diario(),
         'inventario': get_latest_inventario(),
-        'ultimo_ajuste': parse_bitacora()
+        'ultimo_ajuste': get_ultimo_ajuste()  # Usar nueva función
     }
+
+
+# ============================================================================
+# Funciones para gestión de ajustes del plan diario
+# ============================================================================
+
+def obtener_plan_actual():
+    """
+    Obtiene el plan diario actual almacenado.
+    
+    Returns:
+        dict: Diccionario con el plan actual, o un dict vacío si no existe
+        
+    Estructura del plan retornado:
+        {
+            'timestamp': '2026-01-01 19:00',
+            'obligaciones': [...],
+            'tarea_ancla': '...',
+            'resto_dia': '...'
+        }
+    """
+    plan = get_latest_plan_diario()
+    if plan is None:
+        return {
+            'timestamp': '',
+            'obligaciones': [],
+            'tarea_ancla': '',
+            'resto_dia': ''
+        }
+    return plan
+
+
+def actualizar_plan_actual(plan_ajustado):
+    """
+    Actualiza el plan diario actual con los nuevos datos ajustados.
+    
+    Args:
+        plan_ajustado (dict): Diccionario con las nuevas datos del plan
+            Debe contener: obligaciones, tarea_ancla, resto_dia
+    
+    Returns:
+        bool: True si se guardó correctamente, False en caso contrario
+    """
+    try:
+        plan_path = os.path.join(DATA_DIR, 'latest_plan.json')
+        data = {
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'obligaciones': plan_ajustado.get('obligaciones', []),
+            'tarea_ancla': plan_ajustado.get('tarea_ancla', ''),
+            'resto_dia': plan_ajustado.get('resto_dia', '')
+        }
+        with open(plan_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"Error actualizando plan actual: {e}")
+        return False
+
+
+def guardar_ajuste_plan(que_cambio, por_que, plan_original, plan_ajustado):
+    """
+    Registra un ajuste del plan diario en los archivos del sistema.
+    
+    Esta función:
+    1. Guarda el ajuste en ultimo_ajuste.json para el dashboard
+    2. Añade una entrada en la bitácora markdown
+    
+    Args:
+        que_cambio (str): Descripción de los cambios realizados (con formato HTML o markdown)
+        por_que (str): Razón proporcionada por el usuario para el ajuste
+        plan_original (dict): Plan antes del ajuste
+        plan_ajustado (dict): Plan después del ajuste
+    
+    Returns:
+        bool: True si se guardó correctamente, False en caso contrario
+    """
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
+    
+    # 1. Guardar en ultimo_ajuste.json para el dashboard
+    try:
+        ajuste_path = os.path.join(DATA_DIR, 'ultimo_ajuste.json')
+        ajuste_data = {
+            'timestamp': timestamp,
+            'tipo': 'Plan Diario — Ajuste',
+            'que_cambio': que_cambio,
+            'por_que': por_que
+        }
+        with open(ajuste_path, 'w', encoding='utf-8') as f:
+            json.dump(ajuste_data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error guardando ultimo_ajuste.json: {e}")
+        return False
+    
+    # 2. Añadir entrada en bitácora markdown
+    try:
+        agregar_entrada_bitacora_ajuste(
+            timestamp=timestamp,
+            cambios=que_cambio,
+            razon=por_que,
+            plan_resultante=plan_ajustado
+        )
+    except Exception as e:
+        print(f"Error añadiendo entrada a bitácora: {e}")
+        return False
+    
+    return True
+
+
+def agregar_entrada_bitacora_ajuste(timestamp, cambios, razon, plan_resultante):
+    """
+    Añade una entrada de ajuste de plan a la bitácora markdown.
+    
+    Args:
+        timestamp (str): Marca temporal del ajuste
+        cambios (str): Descripción de los cambios (formato markdown)
+        razon (str): Razón del ajuste proporcionada por el usuario
+        plan_resultante (dict): Plan después del ajuste
+    """
+    # Formatear obligaciones para la bitácora
+    obligaciones_md = ""
+    obligaciones = plan_resultante.get('obligaciones', [])
+    
+    if isinstance(obligaciones, list) and obligaciones:
+        for obl in obligaciones:
+            if obl.get('tipo') == 'registrable':
+                estado = '☑' if obl.get('estado') == 'hecho' else '☐'
+                obligaciones_md += f"- {estado} {obl.get('texto', '')} (Registrable)\n"
+            else:
+                obligaciones_md += f"  - {obl.get('texto', '')} (Contexto)\n"
+    else:
+        obligaciones_md = "- (Ninguna)\n"
+    
+    # Formatear tarea estructural
+    tarea_ancla = plan_resultante.get('tarea_ancla', '').strip()
+    tarea_md = tarea_ancla if tarea_ancla else "(Ninguna)"
+    
+    # Formatear espacio reactivo
+    resto_dia = plan_resultante.get('resto_dia', '').strip()
+    reactivo_md = resto_dia if resto_dia else "(Sin especificar)"
+    
+    # Construir entrada markdown
+    entrada = f"""
+## {timestamp} — Plan Diario (Ajuste)
+
+**Tipo:** Plan Diario — Ajuste
+
+**Qué cambió:**
+{cambios}
+
+**Por qué:**
+{razon}
+
+**Plan resultante:**
+
+*Obligaciones*
+{obligaciones_md}
+*Estructural*
+{tarea_md}
+
+*Reactivo/Libre*
+{reactivo_md}
+
+---
+
+"""
+    
+    # Añadir al archivo de bitácora
+    with open(BITACORA_PATH, 'a', encoding='utf-8') as f:
+        f.write(entrada)
+
+
+def get_ultimo_ajuste():
+    """
+    Obtiene el último ajuste registrado para mostrar en el dashboard.
+    
+    Returns:
+        dict: Diccionario con el último ajuste, o None si no existe
+        
+    Estructura retornada:
+        {
+            'timestamp': '2026-01-01 19:00',
+            'tipo': 'Plan Diario — Ajuste',
+            'que_cambio': '...',
+            'por_que': '...'
+        }
+    """
+    ajuste_path = os.path.join(DATA_DIR, 'ultimo_ajuste.json')
+    
+    if not os.path.exists(ajuste_path):
+        # Intentar parsear de la bitácora como fallback
+        return parse_bitacora()
+    
+    try:
+        with open(ajuste_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except:
+        # Si falla, intentar parsear de la bitácora
+        return parse_bitacora()
+

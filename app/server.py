@@ -167,6 +167,96 @@ def chat_history():
     history = agent_service.load_history()
     return jsonify(history)
 
+
+# ============================================================================
+# Rutas para edición y ajuste de plan diario
+# ============================================================================
+
+@app.route('/editar-plan')
+def editar_plan():
+    """
+    Renderiza el formulario para editar el plan diario actual.
+    Pre-carga los datos del plan guardado para permitir su modificación.
+    """
+    import plan_adjuster  # Import here to avoid circular dependencies
+    
+    plan_actual = data_service.obtener_plan_actual()
+    
+    return render_template(
+        'editar_plan.html',
+        obligaciones=plan_actual.get('obligaciones', []),
+        tarea_ancla=plan_actual.get('tarea_ancla', ''),
+        resto_dia=plan_actual.get('resto_dia', '')
+    )
+
+
+@app.route('/api/guardar-ajuste-plan', methods=['POST'])
+def guardar_ajuste_plan():
+    """
+    Procesa el formulario de ajuste del plan diario.
+    
+    Pasos:
+    1. Obtiene el plan original (antes del ajuste)
+    2. Parsea el nuevo plan desde el formulario
+    3. Detecta cambios automáticamente
+    4. Valida la razón del ajuste
+    5. Guarda el ajuste en bitácora y archivo de datos
+    6. Actualiza el plan actual
+    7. Redirige al dashboard con mensaje de confirmación
+    """
+    import plan_adjuster  # Import here to avoid circular dependencies
+    
+    # 1. Obtener plan original
+    plan_original = data_service.obtener_plan_actual()
+    
+    # 2. Parsear nuevo plan desde formulario
+    try:
+        obligaciones_json = request.form.get('obligaciones', '[]')
+        obligaciones = json.loads(obligaciones_json) if obligaciones_json else []
+    except json.JSONDecodeError:
+        return "Error: Formato inválido de obligaciones", 400
+    
+    plan_ajustado = {
+        'obligaciones': obligaciones,
+        'tarea_ancla': request.form.get('tarea_ancla', '').strip(),
+        'resto_dia': request.form.get('resto_dia', '').strip()
+    }
+    
+    # 3. Validar razón del ajuste
+    razon = request.form.get('por_que', '').strip()
+    es_valida, mensaje_error = plan_adjuster.validar_razon_ajuste(razon)
+    
+    if not es_valida:
+        return f"Error: {mensaje_error}", 400
+    
+    # 4. Detectar cambios automáticamente
+    cambios = plan_adjuster.detectar_todos_cambios(plan_original, plan_ajustado)
+    
+    # 5. Formatear cambios para diferentes destinos
+    cambios_markdown = plan_adjuster.formatear_cambios_para_markdown(cambios)
+    cambios_html = plan_adjuster.formatear_cambios_para_html(cambios)
+    
+    # 6. Guardar ajuste en bitácora y ultimo_ajuste.json
+    exito = data_service.guardar_ajuste_plan(
+        que_cambio=cambios_html,  # Para dashboard (HTML)
+        por_que=razon,
+        plan_original=plan_original,
+        plan_ajustado=plan_ajustado
+    )
+    
+    if not exito:
+        return "Error al guardar el ajuste", 500
+    
+    # 7. Actualizar plan actual con datos ajustados
+    data_service.actualizar_plan_actual(plan_ajustado)
+    
+    # 8. Redirigir al dashboard con mensaje de confirmación
+    return render_template(
+        'success.html', 
+        message="Plan ajustado correctamente. Recuerda: ajustar está bien, la rigidez no."
+    )
+
+
 if __name__ == '__main__':
     # Local security guardrails
     app.run(host='127.0.0.1', port=8000, debug=True)
