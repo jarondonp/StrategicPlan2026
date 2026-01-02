@@ -120,6 +120,8 @@ Puede ser:
 **Reglas estrictas:** Máximo UNA. Si no hay energía, se omite. No se reemplaza por otra. No se “compensa” mañana.
 {: .guardrail }
 
+**Horizonte Esperado:** El sistema permite declarar una estimación de tiempo (ej. "~1 semana") para esta tarea. Esto sirve para dar realismo, no para generar deadlines rígidos.
+
 ### Bloque 3 — Espacio libre / reactivo / descanso
 Incluye:
 *   Correos
@@ -176,25 +178,39 @@ Incluye:
 
 ---
 
-## 5.2. Tipos de ítems en el Plan Diario (Funcionalidad Sistema)
-*(Estructura técnica)*
+## 5.2. Clasificación de Obligaciones (Etiquetas de Contexto)
+*(Funcionalidad del Sistema)*
 
-Para proteger tu atención, el sistema digital ahora distingue dos tipos de entradas en el **Bloque 1: Obligaciones**:
+Para ordenar visualmente el día sin compartimentarlo en exceso, el sistema digital permite marcar cada **Obligación** con un color de contexto. Todas son "registrables" (tienen checkbox), pero el color indica su naturaleza:
 
-### A) Obligación Registrable ⬜
-*   **Qué es:** Una tarea concreta, binaria y cerrada. Se hace o no se hace.
-*   **Ejemplos:** "Enviar reporte Q3", "Reunión de 10am", "Pagar factura luz".
-*   **Comportamiento en sistema:** Aparece con un **checkbox** interactivo. Puedes marcarla como "Hecho".
-*   **Estado:** Persiste (se guarda si la marcaste).
+### 🔴 Foco (Trabajo / Avance)
+*   Acciones que mueven proyectos activos (Frentes A, B, C).
+*   *Ejemplo:* "Enviar reporte Hexagon", "Revisión de prototipo".
 
-### B) Nota / Contexto (Solo texto)
-*   **Qué es:** Información relevante para el día que NO requiere una acción única de cierre, o que es solo recordatorio ambiental.
-*   **Ejemplos:** "Tener en cuenta feedback cliente", "Ambiente tenso en la oficina", "Esperar respuesta de X".
-*   **Comportamiento en sistema:** Aparece como **texto plano** (cursiva), sin checkbox.
-*   **Propósito:** Reducir el ruido visual. No todo es un "to-do".
+### 🟢 Mantenimiento (Sostén / Salud)
+*   Acciones que sostienen la base operativa o personal (Capa 1).
+*   *Ejemplo:* "Pagar servicios", "Cita médica", "Trámites bancarios".
 
-**Regla de uso:**
-Al crear tu plan, el sistema por defecto asume "Nota / Contexto". Solo cambia a "Registrable" si realmente necesitas la satisfacción o el control de marcar el check. **Ante la duda, déjalo como nota.**
+### 🔵 Semilla (Futuro / Latente)
+*   Pequeñas acciones que alimentan opciones futuras sin ser proyectos activos.
+*   *Ejemplo:* "Leer artículo de referencia", "Guardar idea SLS".
+
+**Propósito:** Al ver el plan, los colores te dicen instantáneamente si tu día es puro sostén (verde) o si tienes carga de avance (rojo), ayudando a ajustar expectativas.
+
+---
+
+## 5.3. Ayudas Digitales (UX)
+*(Facilitadores de flujo)*
+
+El sistema incluye herramientas para reducir la fricción de planificación:
+
+### 📥 Cargar Último Inventario
+En la pantalla de Inventario, no necesitas reescribir todo desde cero. Puedes traer los textos de la semana anterior para editarlos ("iterar sobre la realidad") en lugar de empezar en blanco.
+
+### 📋 Contexto Lateral (Toggle)
+Tanto en el Inventario como en el Plan Diario, siempre verás tu contexto en una columna lateral (Brújula Trimestral o Último Inventario).
+*   **Expandido:** Para leer y referenciar mientras planificas.
+*   **Colapsado:** Para concentrarte en escribir sin ruido visual.
 
 ---
 

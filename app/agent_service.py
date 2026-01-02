@@ -39,7 +39,9 @@ def load_document_content():
         if state['plan_diario'].get('obligaciones'):
             context += f"- Obligaciones: {state['plan_diario']['obligaciones']}\n"
         if state['plan_diario'].get('tarea_ancla'):
-            context += f"- Tarea Ancla: {state['plan_diario']['tarea_ancla']}\n"
+            horizonte = state['plan_diario'].get('horizonte_tarea_ancla', '')
+            ancla_full = f"{state['plan_diario']['tarea_ancla']} (Horizonte: {horizonte})" if horizonte else state['plan_diario']['tarea_ancla']
+            context += f"- Tarea Ancla: {ancla_full}\n"
         if state['plan_diario'].get('resto_dia'):
             context += f"- Espacio Reactivo: {state['plan_diario']['resto_dia']}\n"
     else:
@@ -50,10 +52,12 @@ def load_document_content():
         context += f"- Timestamp: {state['inventario']['timestamp']}\n"
         if state['inventario'].get('energia'):
             context += f"- Energía/Estado: {state['inventario']['energia']}\n"
-        if state['inventario'].get('claridad_frentes'):
-            context += f"- Claridad de Frentes: {state['inventario']['claridad_frentes']}\n"
-        if state['inventario'].get('ajuste_necesario'):
-            context += f"- Ajuste Necesario: {state['inventario']['ajuste_necesario']}\n"
+        if state['inventario'].get('focos_activos'):
+            context += f"- 🔴 Focos Activos (Capa 2): {state['inventario']['focos_activos']}\n"
+        if state['inventario'].get('mantenimiento'):
+            context += f"- 🟢 Mantenimiento (Capa 1): {state['inventario']['mantenimiento']}\n"
+        if state['inventario'].get('semillas'):
+            context += f"- 🔵 Semillas/Latentes (Capa 3): {state['inventario']['semillas']}\n"
     else:
         context += "\n**Inventario Semanal:** No hay inventario reciente.\n"
     

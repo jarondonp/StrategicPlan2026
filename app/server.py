@@ -2,6 +2,10 @@ import os
 import datetime
 import json
 from flask import Flask, render_template, request, redirect, url_for, abort, jsonify
+from dotenv import load_dotenv
+
+load_dotenv() # Load environment variables from .env file
+
 import agent_service
 import data_service
 

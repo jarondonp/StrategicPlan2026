@@ -94,5 +94,21 @@
   {
     "role": "assistant",
     "content": "Según tu Plan Diario Activo (timestamp 2025-12-26 23:36):\n\n**Obligaciones:**\n\n1.  Limpiar Bano y comprar cosas minimas de la casa (Aseo, comida, etc)\n2.  Evaluar si voy a viajar o no a Garzon para pasar fin de ano\n3.  Cortarme el cabello\n\n**Tarea Ancla:**\n\n*   Entender flujo de resolucion de casos Hexagon - Flujo completo (Nivle 2. Meta: Hexagon estable). Meta:)\n\n**Espacio Reactivo:**\n\n*   Pensar ideas, escribirlas, expresion creativa en cualquiera de mis areas de interes\n\n¿Este plan sigue siendo vigente para hoy?\n"
+  },
+  {
+    "role": "user",
+    "content": "cuales tareas tengo pendientes hoy?"
+  },
+  {
+    "role": "assistant",
+    "content": "Error: No GEMINI_API_KEY found in environment variables."
+  },
+  {
+    "role": "user",
+    "content": "en que tareas deberia enfocarme hoy?"
+  },
+  {
+    "role": "assistant",
+    "content": "Según tu Plan Diario Activo (timestamp 2025-12-26 23:36):\n\n1.  **Obligaciones:** Limpiar Bano y comprar cosas minimas de la casa (Aseo, comida, etc), Evaluar si voy a viajar o no a Garzon para pasar fin de ano, Cortarme el cabello.\n2.  **Tarea Ancla:** Entender flujo de resolucion de casos Hexagon - Flujo completo (Nivle 2. Meta: Hexagon estable).\n\nDado que no tengo información sobre tu energía actual, te sugiero priorizar las **Obligaciones** primero, y luego dedicar tiempo a la **Tarea Ancla** si te sientes con energía para ello. El **Espacio Reactivo** es para usarlo según surja la necesidad o la inspiración.\n"
   }
 ]

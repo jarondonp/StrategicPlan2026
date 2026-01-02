@@ -1,4 +1,4 @@
-# Sistema de Planificación Estratégica Personal 2026
+# Planificación Estratégica y Operativa 2026
 
 **Javier Rondón**
 Versión: 1.1 | Estado: Activo | Rol: Marco de Decisión
@@ -623,6 +623,14 @@ Es el antídoto tanto contra el **hacer hacer hacer** como contra el **sostener 
     <li><strong>Validación (Q3):</strong> Fase de prueba. Verificar si lo creado funciona o tiene valor.</li>
     <li><strong>Cierre (Q4):</strong> Fase final. Terminar ordenadamente o pausar hasta el próximo año.</li>
 </ul>
+
+#### 🗺️ Traducción: Estrategia → Inventario Semanal
+
+| Capa Estratégica | Caja del Inventario |
+| :--- | :--- |
+| **Capa 1** (Base Viva / Salud / Sistemas) | **🏠 Mantenimiento** |
+| **Capa 2** (Frentes A, B, C Activos) | **🔴 Focos Activos** |
+| **Capa 3** (Latentes / SLS / Ideas) | **🌱 Semillas / Latentes** |
 
 
 
