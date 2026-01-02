@@ -28,122 +28,73 @@ Inicio del sistema.
 ## 2025-12-26 21:03
 **Tipo:** Plan Diario
 **Contenido:**
-**Obligaciones**
-Reunion con equipo a las 10am
-
-**Estructural**
-Revisar documentacion tecnica
-
-**Reactivo/Libre**
+**Obligaciones**
+Reunion con equipo a las 10am
+
+**Estructural**
+Revisar documentacion tecnica
+
+**Reactivo/Libre**
 Responder emails pendientes
 
 
 ## 2025-12-26 21:04
 **Tipo:** Plan Diario
 **Contenido:**
-**Obligaciones**
-
-
-**Estructural**
-
-
-**Reactivo/Libre**
+**Obligaciones**
 
 
-
-## 2025-12-26 23:10
-**Tipo:** Inventario Semanal
-**Qué cambió:**
-None
-**Por qué:**
-None
+**Estructural**
 
 
-## 2025-12-26 23:12
-**Tipo:** Inventario Semanal
-**Qué cambió:**
-None
-**Por qué:**
-None
-
-
-## 2025-12-26 23:20
-**Tipo:** Inventario Semanal
-**Energía/Estado:**
-Energia alta - buen descanso
-**Claridad de Frentes:**
-Frente 1: Hexagon estable, Frente 2: Migracion en curso
-**Ajuste Necesario:**
-Ninguno por ahora
-
-
-## 2025-12-26 23:25
-**Tipo:** Inventario Semanal
-**Energía/Estado:**
-1. Cansancio acumulado sobre todo a nivel mental
-2. descontrol de horas de sueno
-3. cierto desgaste psicologico y mental
-
-**Claridad de Frentes:**
-1. Actividades con hexagon a nivel laboral: Atencion a casos, documentacion
-2. Pendientes de gestion para tramite de visa: apostilla, movimientos bancarios, carta laboral rafael
-3. Documentacion y registros de gastos/deudas/suscripciones 
-4. Ausencia de un plan financiero claro y estructurado
-5. Marca personal no desarrollada
-6. Proyecto SLS 
-7. Pagina web de alejandro y proyecto de salud mental con aplicaciones
-8. Becas y gestion de documentacion para aplicaciones
-9. Plan de formacion profesional en areas especificas 2026
-**Ajuste Necesario:**
-Tendencia a convertir todo a mi alrededor en un sistema y algo que puedo automatiza
-Tendencia a quedarme pensando mucho en cama antes de levantarme
+**Reactivo/Libre**
 
 
 ## 2025-12-26 23:36
 **Tipo:** Plan Diario
 **Contenido:**
-**Obligaciones**
-1. Limpiar Bano y comprar cosas minimas de la casa (Aseo, comida, etc)
-2. Evaluar si voy a viajar o no a Garzon para pasar fin de ano
-3. Cortarme el cabello
-
-
-**Estructural**
-Tarea ancla: Entender flujo de resolucion de casos Hexagon - Flujo completo (Nivle 2. Meta: Hexagon estable). Meta:)
-
-**Reactivo/Libre**
+**Obligaciones**
+1. Limpiar Bano y comprar cosas minimas de la casa (Aseo, comida, etc)
+2. Evaluar si voy a viajar o no a Garzon para pasar fin de ano
+3. Cortarme el cabello
+
+
+**Estructural**
+Tarea ancla: Entender flujo de resolucion de casos Hexagon - Flujo completo (Nivle 2. Meta: Hexagon estable). Meta:)
+
+**Reactivo/Libre**
 Pensar ideas , escribirlas, expresion creativa en cualquiera de mis areas de interes
 
 
 ## 2025-12-27 14:42
 **Tipo:** Plan Diario
 **Contenido:**
-**Obligaciones**
-- [ ] Tarea Registrable 1 (Registrable)
-- Nota Contexto 1
-
-
-**Estructural**
-
-
-**Reactivo/Libre**
+**Obligaciones**
+- [ ] Tarea Registrable 1 (Registrable)
+- Nota Contexto 1
+
+
+**Estructural**
+
+
+**Reactivo/Libre**
 
 
 
 ## 2026-01-01 18:08
 **Tipo:** Plan Diario
 **Contenido:**
-**Obligaciones**
-- [ ] cerrar casos(2) hexagon WO (Registrable)
-- [ ] Completar sql para insert de ultimo WO (Registrable)
-- Definir ruta desarrollo para sitema de control financiero
-- Completar registro de primeras cuentas  para cerrar mes de diciembre 2025
-
-
-**Estructural**
-documentar llenado de casos remedy a aprtir de ultima reunion con Huber
-
-**Reactivo/Libre**
+**Obligaciones**
+- [ ] cerrar casos(2) hexagon WO (Registrable)
+- [ ] Completar sql para insert de ultimo WO (Registrable)
+- Definir ruta desarrollo para sitema de control financiero
+- Completar registro de primeras cuentas  para cerrar mes de diciembre 2025
+
+
+**Estructural**
+documentar llenado de casos remedy a aprtir de ultima reunion con Huber
+
+**Reactivo/Libre**
 
 
 ## 2026-01-01 19:17 — Plan Diario (Ajuste)
@@ -231,13 +182,14 @@ documentar llenado de casos remedy a aprtir de ultima reunion con Huber
 
 ---
 
+## 2026-01-02 05:08
 
+**Tipo:** Inventario Semanal — Ajuste
 
-## 2026-01-02 03:46
-**Tipo:** Inventario Semanal
 **Energía/Estado:**
 Un poco cansado, con hiperactividad en optimizar el sistema para registar avances en 2026, quiza sea un mecanismo de escape como suele ser, porque vengo pasando fin de ano solo y creo que ponerme hacer esto ocupa mi mente y me regula nose si sanamente o no pero lo hace
-**Focos Activos (Q1):**
+
+**Focos Activos:**
 🔹 FRENTE A — TRABAJO & SUSTENTO
 
 Cumplir con Hexagon de forma profesional y sostenible
@@ -252,14 +204,21 @@ Ejecutar asesoría de marca sin sobrecarga
 ✅ Aprender haciendo, creando, probando
 ❌ NO acumular cursos
 ❌ NO planear currículos
-**Mantenimiento (Capa 1):**
+
+**Mantenimiento:**
 1. Documentacion y registros de gastos/deudas/suscripciones 
 2. Ausencia de un plan financiero claro y estructurado
 3. Seguir trabajo terapeutico / encuentro EPE
 4. No descuidar tema espiritual: agradecimiento oracion
-**Semillas / Latentes (Capa 3):**
+
+**Semillas / Latentes:**
 🌱 SLS — PRESENCIA MÍNIMA
 
-Web existe, Discurso existe
-Puede haber: 1 ajuste, 1 texto, 1 reflexión publicada
-NO objetivos, NO cronogramas
+- Web existe, Discurso existe
+
+- Puede haber: 1 ajuste, 1 texto, 1 reflexión publicada
+
+- NO objetivos, NO cronogramas
+
+---
+

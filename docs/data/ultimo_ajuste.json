@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-01-02 02:15",
-  "tipo": "Plan Diario — Ajuste",
-  "que_cambio": "<ul style='margin: 0; padding-left: 1.5rem;'><li>Cambiado tipo de 'Definir ruta desarrollo para sitema de control financiero': contexto → registrable</li><li>Cambiado tipo de 'Completar registro de primeras cuentas  para cerrar mes de diciembre 2025': contexto → registrable</li></ul>",
-  "por_que": "Para validar nuevas funcionalidades de clasificacion"
+  "timestamp": "2026-01-02 05:08",
+  "tipo": "Inventario Semanal — Ajuste",
+  "que_cambio": "Corrección de inventario semanal",
+  "por_que": "Ajuste de datos"
 }

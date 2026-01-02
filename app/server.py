@@ -136,8 +136,9 @@ def guardar_entrada():
         )
 
     elif (tipo == 'Inventario Semanal' or tipo == 'Inventario Semanal — Ajuste') and energia:
+        is_adjustment = (tipo == 'Inventario Semanal — Ajuste')
         if focos_activos or mantenimiento or semillas:
-            data_service.save_inventario_estructurado(energia, focos_activos, mantenimiento, semillas)
+            data_service.save_inventario_estructurado(energia, focos_activos, mantenimiento, semillas, is_adjustment=is_adjustment)
         else:
             data_service.save_inventario(energia, claridad_frentes or '', ajuste_necesario or '')
     
@@ -175,9 +176,17 @@ def guardar_entrada():
         entry += f"**Por qué:**\n{por_que or ''}\n"
 
     # Append to bitacora
+    # CRITICAL: Skip appending for Inventory types because data_service handles it 
+    # with specific formatting and all fields. Only append for Plan Diario / Manual.
+    should_append = True
+    if tipo and 'Inventario Semanal' in tipo:
+        should_append = False
+
     try:
-        with open(BITACORA_FILE, 'a', encoding='utf-8') as f:
-            f.write(entry)
+        if should_append:
+            with open(BITACORA_FILE, 'a', encoding='utf-8') as f:
+                f.write(entry)
+        
         return render_template('success.html', message="Entrada guardada correctamente.")
     except Exception as e:
         return f"Error al guardar: {e}", 500

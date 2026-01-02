@@ -101,10 +101,14 @@ import frases_sistema
 
 # ... (existing functions)
 
-def save_inventario_estructurado(energia, focos_activos, mantenimiento, semillas):
+def save_inventario_estructurado(energia, focos_activos, mantenimiento, semillas, is_adjustment=False):
     """
     Persist structured weekly inventory to JSON storage (Phase 2).
     Also updates ultimo_ajuste.json to reflect this system movement.
+    
+    Args:
+        is_adjustment: If True, only updates JSON files without appending to bitácora.
+                      Use this when editing/correcting an existing inventory.
     """
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
     inv_path = os.path.join(DATA_DIR, 'latest_inventario.json')
@@ -124,23 +128,25 @@ def save_inventario_estructurado(energia, focos_activos, mantenimiento, semillas
         ajuste_path = os.path.join(DATA_DIR, 'ultimo_ajuste.json')
         ajuste_data = {
             'timestamp': timestamp,
-            'tipo': 'Inventario Semanal',
-            'que_cambio': 'Registro de nuevo inventario semanal',
-            'por_que': 'Mantenimiento del sistema'
+            'tipo': 'Inventario Semanal — Ajuste' if is_adjustment else 'Inventario Semanal',
+            'que_cambio': 'Corrección de inventario semanal' if is_adjustment else 'Registro de nuevo inventario semanal',
+            'por_que': 'Ajuste de datos' if is_adjustment else 'Mantenimiento del sistema'
         }
         with open(ajuste_path, 'w', encoding='utf-8') as f:
             json.dump(ajuste_data, f, ensure_ascii=False, indent=2)
     except Exception as e:
         print(f"Error updating ultimo_ajuste from inventory: {e}")
 
-    # Append to Bitacora Markdown
+    # Append to Bitacora Markdown (ALWAYS, using structured helper)
+    tipo_texto = 'Inventario Semanal — Ajuste' if is_adjustment else 'Inventario Semanal'
     try:
         agregar_entrada_bitacora_inventario(
             timestamp=timestamp,
             energia=energia,
             focos=focos_activos,
             mantenimiento=mantenimiento,
-            semillas=semillas
+            semillas=semillas,
+            tipo=tipo_texto
         )
     except Exception as e:
         print(f"Error appending to bitacora: {e}")
@@ -225,21 +231,24 @@ def get_ultimo_inventario_estructurado():
     Recupera el ultimo inventario estructurado para precarga inteligente.
     Retorna dict con {energia, focos_activos, mantenimiento, semillas} o None
     """
-    entradas = obtener_entradas_bitacora_estructuradas()
-    inventarios = [e for e in entradas if e['tipo'] == 'Inventario Semanal' or e['tipo'] == 'Inventario Semanal — Ajuste']
-    
-    if not inventarios:
+    inv_path = os.path.join(DATA_DIR, 'latest_inventario.json')
+    if not os.path.exists(inv_path):
         return None
-        
-    latest = inventarios[0]
-    campos = latest['campos']
     
-    return {
-        'energia': campos.get('energia', ''),
-        'focos_activos': campos.get('focos_activos', '') or campos.get('claridad_frentes', ''),
-        'mantenimiento': campos.get('mantenimiento', ''),
-        'semillas': campos.get('semillas', '') or campos.get('ajuste_necesario', '')
-    }
+    try:
+        with open(inv_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # Return only the fields needed for the form
+        return {
+            'energia': data.get('energia', ''),
+            'focos_activos': data.get('focos_activos', ''),
+            'mantenimiento': data.get('mantenimiento', ''),
+            'semillas': data.get('semillas', '')
+        }
+    except Exception as e:
+        print(f"Error loading latest inventory: {e}")
+        return None
 
 def get_historial_puntos_diarios(limit=3):
     """
@@ -314,14 +323,14 @@ def get_estrategia_actual(quarter="Q1"):
     except Exception as e:
         return f"<p>Error leyendo estrategia: {e}</p>"
 
-def agregar_entrada_bitacora_inventario(timestamp, energia, focos, mantenimiento, semillas):
+def agregar_entrada_bitacora_inventario(timestamp, energia, focos, mantenimiento, semillas, tipo="Inventario Semanal"):
     """
     Appends a new Weekly Inventory entry to the markdown bitacora.
     """
     entrada = f"""
 ## {timestamp}
 
-**Tipo:** Inventario Semanal
+**Tipo:** {tipo}
 
 **Energía/Estado:**
 {energia}
