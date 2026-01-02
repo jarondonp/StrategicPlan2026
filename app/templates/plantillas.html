@@ -1,203 +1,281 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="margin-bottom: 3rem;">
-    <h1>Plantillas de Pensamiento</h1>
-    <p class="meta-text">Herramientas para descargar la mente y estructurar el día. Sin juicio, sin métricas.</p>
-</div>
 
-<div class="form-section"
-    style="background: linear-gradient(135deg, #fafaf8 0%, #f5f5f3 100%); border-left: 3px solid #9CA3AF; display: flex; align-items: center; justify-content: space-between; gap: 2rem;">
-    <div>
-        <h2>📝 Inventario Semanal</h2>
-        <p style="font-style: italic; color: #666; margin-bottom: 0;">
-            <strong>Objetivo:</strong> Vaciar la mente. No es una lista de tareas, es un registro de realidad.<br>
-            <span style="font-size: 0.9rem;">(Frecuencia: Domingos o Lunes. Duración: 15 min)</span>
-        </p>
-    </div>
-    <div style="text-align: right;">
-        <a href="/nuevo-inventario" class="btn" style="white-space: nowrap;">
-            ✨ Iniciar Nuevo Inventario
-        </a>
-        <p style="font-size: 0.8rem; color: #6B7280; margin-top: 0.5rem; font-style: italic;">
-            Te llevará a la nueva interfaz
-        </p>
-    </div>
-</div>
+<style>
+    .planning-layout {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
 
-<div class="form-section"
-    style="background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%); border-left: 3px solid #3B82F6;">
-    <h2>⚡ Plan Diario</h2>
-    <p style="font-weight: 600; color: #1a1a1a; margin-bottom: 0.5rem; font-size: 1rem;">
-        Aquí sí se decide. Poco. Consciente.
-    </p>
-    <p style="font-style: italic; color: #666; margin-bottom: 2rem;">
-        Principio: Sostener el día con dignidad. <strong>Tres bloques.</strong> No llenar por llenar.
-    </p>
+    .planning-main {
+        flex: 3;
+        min-width: 0;
+        /* Prevent flex blowout */
+    }
 
-    <!-- Collapsible Last Inventory Context -->
-    {% if inventario %}
-    <details
-        style="margin-bottom: 1.5rem; border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden; background: #F9FAFB;">
-        <summary
-            style="padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 0.75rem; user-select: none; transition: background-color 0.2s;">
-            <span style="font-size: 1.1rem;">📋</span>
-            <span>Ver Último Inventario Semanal</span>
-            <span style="margin-left: auto; font-size: 0.8rem; font-weight: 400; color: #6B7280;">{{
-                inventario.timestamp }}</span>
-        </summary>
+    .planning-sidebar {
+        flex: 2;
+        min-width: 300px;
+        position: sticky;
+        top: 2rem;
+        max-height: calc(100vh - 4rem);
+        overflow-y: auto;
+        background: #F9FAFB;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
 
-        <div style="padding: 1.5rem; background: white; border-top: 1px solid #E5E7EB;">
-            <p style="font-size: 0.85rem; color: #6B7280; margin-bottom: 1.25rem; font-style: italic;">
-                Este es tu contexto semanal. Recuerda: del inventario completo, solo UNA cosa puede convertirse en tarea
-                estructural hoy.
+    /* Mobile Responsive */
+    @media (max-width: 900px) {
+        .planning-layout {
+            flex-direction: column-reverse;
+            /* Form bottom, Context top? User needs context. */
+            flex-direction: column;
+        }
+
+        .planning-sidebar {
+            position: static;
+            /* No sticky on mobile */
+            width: 100%;
+            max-height: none;
+            margin-bottom: 2rem;
+            order: -1;
+            /* Show context first on mobile */
+        }
+    }
+
+    .ctx-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .ctx-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #6B7280;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .ctx-content {
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+
+    /* Colores Contexto */
+    .ctx-energy {
+        background: #FEF3C7;
+        border-left: 3px solid #F59E0B;
+        color: #78350F;
+    }
+
+    .ctx-focos {
+        background: #FEF2F2;
+        border-left: 3px solid #EF4444;
+        color: #7F1D1D;
+    }
+
+    .ctx-mante {
+        background: #ECFDF5;
+        border-left: 3px solid #10B981;
+        color: #064E3B;
+    }
+
+    .ctx-semilla {
+        background: #EFF6FF;
+        border-left: 3px solid #3B82F6;
+        color: #1E40AF;
+    }
+</style>
+
+<div class="planning-layout">
+
+    <!-- COLUMNA IZQUIERDA: FORMULARIO PLAN DIARIO -->
+    <div class="planning-main">
+        <div style="margin-bottom: 2rem;">
+            <h1>⚡ Plan Diario</h1>
+            <p style="font-style: italic; color: #4B5563; margin-bottom: 0.5rem;">
+                Principio: Sostener el día con dignidad. <strong>Tres bloques.</strong> No llenar por llenar.
             </p>
-
-            {% if inventario.energia %}
-            <div style="margin-bottom: 1.25rem;">
-                <div
-                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; margin-bottom: 0.5rem; font-weight: 600;">
-                    Energía / Estado</div>
-                <div
-                    style="padding: 0.75rem; background: #FEF3C7; border-left: 3px solid #F59E0B; border-radius: 4px; font-size: 0.9rem; line-height: 1.6; color: #78350F; white-space: pre-wrap;">
-                    {{ inventario.energia }}</div>
-            </div>
-            {% endif %}
-
-            {% if inventario.claridad_frentes %}
-            <div style="margin-bottom: 1.25rem;">
-                <div
-                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; margin-bottom: 0.5rem; font-weight: 600;">
-                    Claridad de Frentes</div>
-                <div
-                    style="padding: 0.75rem; background: #EFF6FF; border-left: 3px solid #3B82F6; border-radius: 4px; font-size: 0.9rem; line-height: 1.6; color: #1E40AF; white-space: pre-wrap;">
-                    {{ inventario.claridad_frentes }}</div>
-            </div>
-            {% endif %}
-
-            {% if inventario.ajuste_necesario %}
-            <div>
-                <div
-                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #9CA3AF; margin-bottom: 0.5rem; font-weight: 600;">
-                    Ajuste Necesario</div>
-                <div
-                    style="padding: 0.75rem; background: #F3F4F6; border-left: 3px solid #6B7280; border-radius: 4px; font-size: 0.9rem; line-height: 1.6; color: #374151; white-space: pre-wrap;">
-                    {{ inventario.ajuste_necesario }}</div>
-            </div>
-            {% endif %}
         </div>
-    </details>
-    {% else %}
-    <div
-        style="margin-bottom: 1.5rem; padding: 1rem; background: #F9FAFB; border: 1px dashed #D1D5DB; border-radius: 6px; text-align: center; color: #6B7280; font-size: 0.9rem; font-style: italic;">
-        No hay inventario semanal registrado. <a href="#inventario-semanal"
-            style="color: #3B82F6; text-decoration: underline;">Crear uno primero</a> te ayudará a tener contexto para
-        planificar.
-    </div>
-    {% endif %}
 
-    <div
-        style="background: #FEF3C7; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem; border-left: 3px solid #F59E0B;">
-        <p style="margin: 0; font-size: 0.85rem; line-height: 1.6; color: #92400E;">
-            <strong>⚠️ Recordatorio:</strong> Del inventario completo, solo UNA cosa puede ser tarea estructural hoy
-            (Bloque 2). Los otros items siguen ahí, no desaparecen, no se convierten en culpa.
-        </p>
-    </div>
-
-    <!-- Panel Realidad vs Intención (Historial de Puntos) -->
-    <!-- ESTO SE MOSTRARÁ SOLO SI EL BACKEND ENVÍA DATOS (Fase 2) -->
-    {% if state is defined and state.historial_puntos %}
-    <div
-        style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
-        <div style="font-size: 0.85rem; color: #4b5563; font-weight: 600;">
-            🔍 Realidad de los últimos días
-        </div>
-        <div style="display: flex; gap: 1.5rem;">
-            {% for dia in state.historial_puntos %}
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
-                <span style="font-size: 0.7rem; color: #9ca3af; text-transform: uppercase;">{{ dia.fecha[-5:] }}</span>
-                <div style="display: flex; gap: 2px;">
-                    {% for punto in dia.puntos %}
-                    <div style="width: 8px; height: 8px; border-radius: 50%; background-color: {% if punto == 'red' %}#ef4444{% elif punto == 'green' %}#10b981{% elif punto == 'blue' %}#3b82f6{% else %}#d1d5db{% endif %};"
-                        title="{{ punto }}"></div>
-                    {% endfor %}
-                    {% if not dia.puntos %}
-                    <span style="font-size: 0.7rem; color: #d1d5db;">(Sin datos)</span>
-                    {% endif %}
+        <!-- Panel Realidad vs Intención (Historial de Puntos) - Restored -->
+        {% if state is defined and state.historial_puntos %}
+        <div
+            style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 0.85rem; color: #4b5563; font-weight: 600;">
+                🔍 Realidad de los últimos días
+            </div>
+            <div style="display: flex; gap: 1.5rem;">
+                {% for dia in state.historial_puntos %}
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0.25rem;">
+                    <span style="font-size: 0.7rem; color: #9ca3af; text-transform: uppercase;">{{ dia.fecha[-5:]
+                        }}</span>
+                    <div style="display: flex; gap: 2px;">
+                        {% for punto in dia.puntos %}
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background-color: {% if punto == 'red' %}#ef4444{% elif punto == 'green' %}#10b981{% elif punto == 'blue' %}#3b82f6{% else %}#d1d5db{% endif %};"
+                            title="{{ punto }}"></div>
+                        {% endfor %}
+                        {% if not dia.puntos %}
+                        <span style="font-size: 0.7rem; color: #d1d5db;">(Sin datos)</span>
+                        {% endif %}
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="form-section form-container-daily">
+            <form action="/api/guardar" method="POST" id="daily-form">
+                <input type="hidden" name="tipo" value="Plan Diario">
+
+                <!-- SECCION 1: OBLIGACIONES -->
+                <div class="form-group">
+                    <label>1. Obligaciones Reales (Ya existen)</label>
+                    <div
+                        style="background: #eef2ff; border-left: 3px solid #6366f1; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #4338ca;">
+                        <strong>Micro-decisión:</strong> Etiqueta cada tarea. <br>
+                        <span style="color: #ef4444;">🔴 Foco (Trabajo)</span> |
+                        <span style="color: #10b981;">🟢 Mante (Sostén)</span> |
+                        <span style="color: #3b82f6;">🔵 Semilla (Futuro)</span>
+                    </div>
+
+                    <div id="obligaciones-container"
+                        style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
+                        <!-- Rows will be added dynamically -->
+                    </div>
+
+                    <button type="button" class="btn btn-outline" onclick="addObligationRow()"
+                        style="font-size: 0.85rem; padding: 0.5rem 1rem;">
+                        + Añadir obligación
+                    </button>
+                    <input type="hidden" name="obligaciones" id="b1">
+                </div>
+
+                <!-- SECCION 2: ESTRUCTURAL -->
+                <div class="form-group"
+                    style="background: #F3F4F6; padding: 1.5rem; border-radius: 4px; border: 2px dashed #9CA3AF;">
+                    <label style="color: #EF4444;">2. Tarea Estructural (Máximo 1 — SOLO UNA)</label>
+                    <small style="display: block; color: #666; margin-bottom: 0.5rem; font-style: italic;">
+                        Elige una sola cosa del inventario (derecha) que moverá la aguja hoy.
+                    </small>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" name="tarea_ancla" id="b2" placeholder="Ej: Avanzar reporte Q1..."
+                            style="padding: 1.2rem; flex: 3;">
+
+                        <!-- Horizonte Esperado -->
+                        <select name="horizonte_tarea_ancla" id="b2-horizonte"
+                            style="flex: 1; padding: 0.5rem; font-size: 0.85rem; border: 1px solid #d1d5db; border-radius: 4px; color: #4b5563;">
+                            <option value="">(Horizonte)</option>
+                            <option value="1-2 días">1-2 días</option>
+                            <option value="3-5 días">3-5 días</option>
+                            <option value="1 semana">1 semana</option>
+                            <option value="2 semanas">2 semanas</option>
+                            <option value="+1 mes">+1 mes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SECCION 3: REACTIVO -->
+                <div class="form-group">
+                    <label>3. Espacio Reactivo / Libre</label>
+                    <textarea name="resto_dia" id="b3" style="min-height: 100px;"
+                        placeholder="Responder mensajes, imprevistos, descanso..."></textarea>
+                </div>
+
+                <input type="hidden" name="contenido" id="daily-full-content">
+
+                <div id="daily-preview-container" class="hidden">
+                    <label>Confirmar Plan</label>
+                    <div id="daily-preview" class="preview-box"></div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; align-items: center; margin-top: 2rem;">
+                    <button type="button" class="btn btn-outline" onclick="composeDaily()">Ver Vista Previa</button>
+                    <button type="submit" class="btn" onclick="composeDaily()">Comprometer Plan</button>
+                </div>
+            </form>
         </div>
     </div>
-    {% endif %}
 
-    <form action="/api/guardar" method="POST" id="daily-form">
-        <input type="hidden" name="tipo" value="Plan Diario">
-
-        <div class="form-group">
-            <label>1. Obligaciones Reales (Ya existen)</label>
-            <div
-                style="background: #eef2ff; border-left: 3px solid #6366f1; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #4338ca;">
-                <strong>Micro-decisión:</strong> Etiqueta cada tarea. <br>
-                <span style="color: #ef4444;">🔴 Foco (Trabajo)</span> |
-                <span style="color: #10b981;">🟢 Mante (Sostén)</span> |
-                <span style="color: #3b82f6;">🔵 Semilla (Futuro)</span>
-            </div>
-
-            <div id="obligaciones-container"
-                style="display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem;">
-                <!-- Rows will be added here -->
-            </div>
-
-            <button type="button" class="btn btn-outline" onclick="addObligationRow()"
-                style="font-size: 0.85rem; padding: 0.5rem 1rem;">
-                + Añadir obligación
-            </button>
-
-            <input type="hidden" name="obligaciones" id="b1">
-        </div>
-
-        <div class="form-group"
-            style="background: #F3F4F6; padding: 1.5rem; border-radius: 4px; border: 2px dashed #9CA3AF;">
-            <label style="color: #EF4444;">2. Tarea Estructural (Máximo 1 — SOLO UNA)</label>
-            <small style="display: block; color: #666; margin-bottom: 0.5rem; font-style: italic;">
-                Ej: "Tarea ancla: entender flujo Remedy".
-            </small>
-            <div style="display: flex; gap: 0.5rem;">
-                <input type="text" name="tarea_ancla" id="b2" placeholder="Opcional. Solo si hay capacidad."
-                    style="padding: 1.2rem; flex: 3;">
-
-                <!-- Horizonte Esperado (Fase 2) -->
-                <select name="horizonte_tarea_ancla" id="b2-horizonte"
-                    style="flex: 1; padding: 0.5rem; font-size: 0.85rem; border: 1px solid #d1d5db; border-radius: 4px; color: #4b5563;">
-                    <option value="">(Horizonte)</option>
-                    <option value="1-2 días">1-2 días</option>
-                    <option value="3-5 días">3-5 días</option>
-                    <option value="1 semana">1 semana</option>
-                    <option value="2 semanas">2 semanas</option>
-                    <option value="+1 mes">+1 mes</option>
-                </select>
+    <!-- COLUMNA DERECHA: CONTEXTO (INVENTARIO) -->
+    <aside class="planning-sidebar" id="planning-sidebar" style="transition: width 0.3s ease;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0; font-size: 1.1rem; color: #111;">📋 Último Inventario</h3>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                {% if inventario %}
+                <span style="font-size: 0.75rem; color: #6B7280;">{{ inventario.timestamp or 'Reciente' }}</span>
+                {% endif %}
+                <button type="button" onclick="toggleSidebar()"
+                    style="background: none; border: none; cursor: pointer; color: #6B7280; font-size: 0.9rem; padding: 0.2rem;"
+                    title="Ocultar Contexto">
+                    ✖️
+                </button>
             </div>
         </div>
 
-        <div class="form-group">
-            <label>3. Espacio Reactivo / Libre</label>
-            <textarea name="resto_dia" id="b3" style="min-height: 100px;"
-                placeholder="Responder mensajes, imprevistos, descanso..."></textarea>
+        {% if inventario %}
+        <!-- Energía -->
+        {% if inventario.energia %}
+        <div class="ctx-section">
+            <div class="ctx-label">⚡ Energía / Estado</div>
+            <div class="ctx-content ctx-energy">{{ inventario.energia }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Focos Activos (New + Legacy Fallback) -->
+        {% if inventario.focos_activos or inventario.claridad_frentes %}
+        <div class="ctx-section">
+            <div class="ctx-label" style="color: #B91C1C;">🔴 Focos Activos (Q1)</div>
+            <div class="ctx-content ctx-focos">{{ inventario.focos_activos or inventario.claridad_frentes }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Mantenimiento -->
+        {% if inventario.mantenimiento %}
+        <div class="ctx-section">
+            <div class="ctx-label" style="color: #047857;">🟢 Mantenimiento (Sostén)</div>
+            <div class="ctx-content ctx-mante">{{ inventario.mantenimiento }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Semillas (New + Legacy Fallback) -->
+        {% if inventario.semillas or inventario.ajuste_necesario %}
+        <div class="ctx-section">
+            <div class="ctx-label" style="color: #1D4ED8;">🔵 Semillas / Futuro</div>
+            <div class="ctx-content ctx-semilla">{{ inventario.semillas or inventario.ajuste_necesario }}</div>
+        </div>
+        {% endif %}
+
+        <div style="margin-top: 2rem; border-top: 1px solid #E5E7EB; padding-top: 1rem; text-align: center;">
+            <a href="/editar-inventario" style="font-size: 0.8rem; color: #6B7280; text-decoration: underline;">✏️
+                Corregir Inventario</a>
         </div>
 
-        <input type="hidden" name="contenido" id="daily-full-content">
-
-        <div id="daily-preview-container" class="hidden">
-            <label>Confirmar Plan</label>
-            <div id="daily-preview" class="preview-box"></div>
+        {% else %}
+        <div style="text-align: center; padding: 2rem 1rem; color: #6B7280; font-style: italic;">
+            <p>No hay inventario registrado.</p>
+            <a href="/nuevo-inventario" class="btn btn-sm">Crear Inventario</a>
         </div>
+        {% endif %}
+    </aside>
 
-        <div style="display: flex; gap: 1rem; align-items: center;">
-            <button type="button" class="btn btn-outline" onclick="composeDaily()">Ver Vista Previa</button>
-            <button type="submit" class="btn" onclick="composeDaily()">Comprometer Plan</button>
-        </div>
-    </form>
+    <!-- Botón para MOSTRAR contexto cuando está oculto -->
+    <div id="show-context-helper"
+        style="display: none; position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 50;">
+        <button onclick="toggleSidebar()"
+            style="background: #3B82F6; color: white; border: none; padding: 1rem 0.5rem; border-radius: 8px 0 0 8px; cursor: pointer; writing-mode: vertical-rl; text-orientation: mixed; font-weight: 600; box-shadow: -2px 0 5px rgba(0,0,0,0.1);">
+            📋 Ver Contexto
+        </button>
+    </div>
+
 </div>
 
 <script>
@@ -333,6 +411,23 @@ ${b3}`;
     }
 
     // Load Previous Inventory Functionality
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('planning-sidebar');
+        const showBtn = document.getElementById('show-context-helper');
+
+        // Check current display style
+        // Note: sidebar.style.display might be empty initially (meaning block from CSS)
+        const isHidden = sidebar.style.display === 'none';
+
+        if (isHidden) {
+            sidebar.style.display = 'block';
+            showBtn.style.display = 'none';
+        } else {
+            sidebar.style.display = 'none';
+            showBtn.style.display = 'block';
+        }
+    }
 
 </script>
 {% endblock %}

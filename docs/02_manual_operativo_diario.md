@@ -280,13 +280,6 @@ Con el tiempo:
 
 ---
 
-### Cierre del Documento 2
-Este sistema existe para que no vivas en urgencia constante, no te pierdas en planificación y no conviertas cada día en una prueba.
-
-Si lo usas bien, ocurrirá algo concreto:
-**Pensarás menos en sistemas y más en vivir el día.**
-{: .principle }
-
 ## 16. Bitácora de Ajustes del Sistema
 
 La bitácora es el registro histórico de todas las decisiones significativas del sistema.
@@ -306,3 +299,12 @@ La bitácora es el registro histórico de todas las decisiones significativas de
 **Propósito:** Reflexión histórica y aprendizaje de patrones, no control diario ni métrica de productividad.
 
 **Acceso:** La bitácora se visualiza en formato estructurado con filtros en `/docs/bitacora`.
+
+---
+
+### Cierre del Documento 2
+Este sistema existe para que no vivas en urgencia constante, no te pierdas en planificación y no conviertas cada día en una prueba.
+
+Si lo usas bien, ocurrirá algo concreto:
+**Pensarás menos en sistemas y más en vivir el día.**
+{: .principle }
