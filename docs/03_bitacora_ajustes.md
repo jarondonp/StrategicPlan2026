@@ -155,33 +155,6 @@ La bitácora anterior era difícil de leer y navegar. Presentaba todo el markdow
 
 ---
 
-
-## 2026-01-02 02:15 — Plan Diario (Ajuste)
-
-**Tipo:** Plan Diario — Ajuste
-
-**Qué cambió:**
-<ul style='margin: 0; padding-left: 1.5rem;'><li>Cambiado tipo de 'Definir ruta desarrollo para sitema de control financiero': contexto → registrable</li><li>Cambiado tipo de 'Completar registro de primeras cuentas  para cerrar mes de diciembre 2025': contexto → registrable</li></ul>
-
-**Por qué:**
-Para validar nuevas funcionalidades de clasificacion
-
-**Plan resultante:**
-
-*Obligaciones*
-- ☐ cerrar casos(2) hexagon WO , columna adicional y fecha null (Registrable)
-- ☐ Completar sql para insert de ultimo WO (Registrable)
-- ☐ Definir ruta desarrollo para sitema de control financiero (Registrable)
-- ☐ Completar registro de primeras cuentas  para cerrar mes de diciembre 2025 (Registrable)
-
-*Estructural*
-documentar llenado de casos remedy a aprtir de ultima reunion con Huber
-
-*Reactivo/Libre*
-(Sin especificar)
-
----
-
 ## 2026-01-02 05:08
 
 **Tipo:** Inventario Semanal — Ajuste
@@ -190,35 +163,74 @@ documentar llenado de casos remedy a aprtir de ultima reunion con Huber
 Un poco cansado, con hiperactividad en optimizar el sistema para registar avances en 2026, quiza sea un mecanismo de escape como suele ser, porque vengo pasando fin de ano solo y creo que ponerme hacer esto ocupa mi mente y me regula nose si sanamente o no pero lo hace
 
 **Focos Activos:**
-🔹 FRENTE A — TRABAJO & SUSTENTO
-
-Cumplir con Hexagon de forma profesional y sostenible
-Mantener JR Techno Solutions viva, no perfecta
-Ejecutar asesoría de marca sin sobrecarga
-
-❌ NO rediseñar marca
-❌ NO lanzar 5 servicios nuevos
-
-🔹 FRENTE B — APRENDIZAJE VIVO
-
-✅ Aprender haciendo, creando, probando
-❌ NO acumular cursos
+🔹 FRENTE A — TRABAJO & SUSTENTO
+
+
+
+Cumplir con Hexagon de forma profesional y sostenible
+
+Mantener JR Techno Solutions viva, no perfecta
+
+Ejecutar asesoría de marca sin sobrecarga
+
+
+
+❌ NO rediseñar marca
+
+❌ NO lanzar 5 servicios nuevos
+
+
+
+🔹 FRENTE B — APRENDIZAJE VIVO
+
+
+
+✅ Aprender haciendo, creando, probando
+
+❌ NO acumular cursos
+
 ❌ NO planear currículos
 
 **Mantenimiento:**
-1. Documentacion y registros de gastos/deudas/suscripciones 
-2. Ausencia de un plan financiero claro y estructurado
-3. Seguir trabajo terapeutico / encuentro EPE
+1. Documentacion y registros de gastos/deudas/suscripciones 
+
+2. Ausencia de un plan financiero claro y estructurado
+
+3. Seguir trabajo terapeutico / encuentro EPE
+
 4. No descuidar tema espiritual: agradecimiento oracion
 
 **Semillas / Latentes:**
-🌱 SLS — PRESENCIA MÍNIMA
-
-- Web existe, Discurso existe
-
-- Puede haber: 1 ajuste, 1 texto, 1 reflexión publicada
-
+🌱 SLS — PRESENCIA MÍNIMA
+
+
+
+- Web existe, Discurso existe
+
+
+
+- Puede haber: 1 ajuste, 1 texto, 1 reflexión publicada
+
+
+
 - NO objetivos, NO cronogramas
 
----
+
+## 2026-01-02 09:58
+**Tipo:** Plan Diario
+**Qué cambió:**
+Horizonte: 1-2 días -> 3-5 días
+**Contenido:**
+**Obligaciones**
+- [ ] 🔴 cerrar casos(2) hexagon WO , columna adicional y fecha null
+- [ ] 🔴 Completar sql para insert de ultimo WO
+- [ ] 🟢 Definir ruta desarrollo para sitema de control financiero
+- [ ] 🟢 Completar registro de primeras cuentas  para cerrar mes de diciembre 2025
+- [ ] 🟢 Completar y enviar Factura Hexagon Diciembre 2025 - pedir datos
+
+
+**Estructural**
+documentar llenado de casos remedy a aprtir de ultima reunion con Huber
+
+**Reactivo/Libre**
 

@@ -92,8 +92,63 @@ def save_plan_diario(obligaciones, tarea_ancla, resto_dia, horizonte_tarea_ancla
         'resto_dia': resto_dia,
         'horizonte_tarea_ancla': horizonte_tarea_ancla
     }
+    
+    # Load old plan for comparison
+    old_plan = get_latest_plan_diario() or {}
+    
+    # Calculate Diff
+    changes = []
+    
+    # 1. Compare Anchor Task
+    old_ancla = old_plan.get('tarea_ancla', '')
+    if old_ancla != tarea_ancla:
+        changes.append(f"Tarea Ancla actualizada (era: '{old_ancla[:30]}...')")
+    
+    # 2. Compare Obligations Count
+    old_obs = old_plan.get('obligaciones', [])
+    old_count = len([o for o in old_obs if isinstance(o, dict) and o.get('tipo', 'registrable') == 'registrable'])
+    
+    new_obs_list = [o for o in data['obligaciones'] if isinstance(o, dict) and o.get('tipo', 'registrable') == 'registrable']
+    new_count = len(new_obs_list)
+    
+    if old_count != new_count:
+        changes.append(f"Obligaciones: {old_count} -> {new_count} items")
+        
+    # 3. Compare Horizon
+    if old_plan.get('horizonte_tarea_ancla') != horizonte_tarea_ancla:
+        changes.append(f"Horizonte: {old_plan.get('horizonte_tarea_ancla', 'N/A')} -> {horizonte_tarea_ancla}")
+        
+    # Default message if no basic diffs (maybe just text edits)
+    if not changes:
+        changes.append("Actualización de contenido / ajuste menor")
+        
+    change_summary = " | ".join(changes)
+
     with open(plan_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+    # Generate descriptive summary for the dashboard
+    num_obs = new_count
+    anchor_summary = (data['tarea_ancla'][:50] + '...') if len(data['tarea_ancla']) > 50 else data['tarea_ancla']
+    
+    # Use diff summary for 'Que cambio' if meaningful, else generic status
+    dashboard_summary = f"Cambios: {change_summary}"
+
+    # Sync with ultimo_ajuste.json to show on Dashboard
+    try:
+        ajuste_path = os.path.join(DATA_DIR, 'ultimo_ajuste.json')
+        ajuste_data = {
+            'timestamp': data['timestamp'],
+            'tipo': 'Plan Diario',
+            'que_cambio': dashboard_summary,
+            'por_que': 'Planificación diaria operativa'
+        }
+        with open(ajuste_path, 'w', encoding='utf-8') as f:
+            json.dump(ajuste_data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error updating ultimo_ajuste from plan: {e}")
+        
+    return change_summary
 
 import frases_sistema
 
@@ -655,7 +710,8 @@ def obtener_entradas_bitacora_estructuradas():
             campos['semillas'] = ajuste_match.group(1).strip()
         
         # Campos para plan diario
-        contenido_match = re.search(r'\*\*Contenido:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        # Match matches until the end of the extracted entry content 
+        contenido_match = re.search(r'\*\*Contenido:\*\*\s*(.+)', entry_content, re.DOTALL)
         if contenido_match:
             campos['contenido'] = contenido_match.group(1).strip()
         

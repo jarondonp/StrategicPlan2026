@@ -168,7 +168,8 @@
                     </small>
                     <div style="display: flex; gap: 0.5rem;">
                         <input type="text" name="tarea_ancla" id="b2" placeholder="Ej: Avanzar reporte Q1..."
-                            style="padding: 1.2rem; flex: 3;">
+                            style="padding: 1.2rem; flex: 3;"
+                            value="{{ state.plan_diario.tarea_ancla if state.plan_diario else '' }}">
 
                         <!-- Horizonte Esperado -->
                         <select name="horizonte_tarea_ancla" id="b2-horizonte"
@@ -187,7 +188,7 @@
                 <div class="form-group">
                     <label>3. Espacio Reactivo / Libre</label>
                     <textarea name="resto_dia" id="b3" style="min-height: 100px;"
-                        placeholder="Responder mensajes, imprevistos, descanso..."></textarea>
+                        placeholder="Responder mensajes, imprevistos, descanso...">{{ state.plan_diario.resto_dia if state.plan_diario else '' }}</textarea>
                 </div>
 
                 <input type="hidden" name="contenido" id="daily-full-content">
@@ -280,10 +281,32 @@
 
 <script>
     // Initialize with one empty row
+    // Initialize with existing data (Ajuste Mode) or one empty row
     docReady(function () {
-        if (document.getElementById('obligaciones-container')) {
-            addObligationRow();
-        }
+        const container = document.getElementById('obligaciones-container');
+        if (!container) return;
+
+        // Load existing obligations from server state
+        const existingObligations = {{ state.plan_diario.obligaciones | tojson | safe if state.plan_diario and state.plan_diario.obligaciones else '[]'
+    }};
+
+    // Load Anchor Horizon
+    const horizonSelect = document.getElementById('b2-horizonte');
+    const savedHorizon = "{{ state.plan_diario.horizonte_tarea_ancla if state.plan_diario else '' }}";
+    if (horizonSelect && savedHorizon) {
+        horizonSelect.value = savedHorizon;
+    }
+
+    if (existingObligations.length > 0) {
+        existingObligations.forEach(item => {
+            // Handle dict vs plain string (compatibility)
+            const text = item.texto || item;
+            const tag = item.tag || 'foco';
+            addObligationRow(text, tag);
+        });
+    } else {
+        addObligationRow();
+    }
     });
 
     function generateUUID() {
@@ -311,6 +334,10 @@
         // Check registable vs nota? Mantenemos simple con selector de tag
         // Nuevo diseño: Input texto + Radio buttons de colores
 
+        const isFoco = type === 'foco' ? 'checked' : '';
+        const isMante = type === 'mantenimiento' ? 'checked' : '';
+        const isSemilla = type === 'semilla' ? 'checked' : '';
+
         row.innerHTML = `
             <div style="flex: 1;">
                 <input type="text" class="form-control obl-text" value="${text}" placeholder="Descripción..." 
@@ -319,15 +346,15 @@
             
             <div style="display: flex; gap: 0.25rem; background: #f3f4f6; padding: 0.25rem; border-radius: 4px;">
                 <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;" title="Foco (Trabajo)">
-                    <input type="radio" name="tag_${id}" value="foco" checked class="obl-tag">
+                    <input type="radio" name="tag_${id}" value="foco" ${isFoco} class="obl-tag">
                     <span style="font-size: 0.8rem;">🔴</span>
                 </label>
                 <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;" title="Mantenimiento">
-                    <input type="radio" name="tag_${id}" value="mantenimiento" class="obl-tag">
+                    <input type="radio" name="tag_${id}" value="mantenimiento" ${isMante} class="obl-tag">
                     <span style="font-size: 0.8rem;">🟢</span>
                 </label>
                 <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;" title="Semilla (Futuro)">
-                    <input type="radio" name="tag_${id}" value="semilla" class="obl-tag">
+                    <input type="radio" name="tag_${id}" value="semilla" ${isSemilla} class="obl-tag">
                     <span style="font-size: 0.8rem;">🔵</span>
                 </label>
             </div>

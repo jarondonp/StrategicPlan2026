@@ -132,7 +132,7 @@ def guardar_entrada():
         except (json.JSONDecodeError, AttributeError):
             obligaciones_data = obligaciones
 
-        data_service.save_plan_diario(
+        change_summary = data_service.save_plan_diario(
             obligaciones_data, 
             tarea_ancla or '', 
             resto_dia or '',
@@ -154,6 +154,10 @@ def guardar_entrada():
     # Different format based on entry type
     if tipo == 'Plan Diario' and contenido:
         # Plan Diario uses structured content
+        # Add explicit Change Log if available
+        if 'change_summary' in locals() and change_summary:
+             entry += f"**Qué cambió:**\n{change_summary}\n"
+
         entry += f"**Contenido:**\n{contenido}\n"
     elif tipo == 'Inventario Semanal' or tipo == 'Inventario Semanal — Ajuste':
         # Inventario Semanal uses specific fields

@@ -1,35 +1,43 @@
 {
-  "timestamp": "2026-01-02 02:15",
+  "timestamp": "2026-01-02 09:58",
   "obligaciones": [
     {
-      "id": "e5c5dfc4-c040-4398-95b7-728bfcf5fa83",
+      "id": "d2c779a3-ce32-48b0-936e-833672f144d9",
       "texto": "cerrar casos(2) hexagon WO , columna adicional y fecha null",
       "tipo": "registrable",
       "tag": "foco",
-      "estado": "pendiente"
+      "estado": "hecho"
     },
     {
-      "id": "7b4477f9-cfe4-4ba1-bbb9-ff5050592cd8",
+      "id": "22aada70-2a52-4756-924a-e6c71eacd15c",
       "texto": "Completar sql para insert de ultimo WO",
       "tipo": "registrable",
       "tag": "foco",
       "estado": "hecho"
     },
     {
-      "id": "fb7a9efc-5e39-44cf-82a9-3cf66113e876",
+      "id": "3b69c395-6320-46a5-b764-3843ce1efe5d",
       "texto": "Definir ruta desarrollo para sitema de control financiero",
       "tipo": "registrable",
       "tag": "mantenimiento",
       "estado": "pendiente"
     },
     {
-      "id": "e36cdfa3-447c-4281-9971-4061deb648f8",
+      "id": "515a22d9-82d4-4e68-b50b-26771e9c5359",
       "texto": "Completar registro de primeras cuentas  para cerrar mes de diciembre 2025",
       "tipo": "registrable",
       "tag": "mantenimiento",
       "estado": "pendiente"
+    },
+    {
+      "id": "8da47e33-ccac-4665-b996-69c05b9622f1",
+      "texto": "Completar y enviar Factura Hexagon Diciembre 2025 - pedir datos",
+      "tipo": "registrable",
+      "tag": "mantenimiento",
+      "estado": "hecho"
     }
   ],
   "tarea_ancla": "documentar llenado de casos remedy a aprtir de ultima reunion con Huber",
-  "resto_dia": ""
+  "resto_dia": "",
+  "horizonte_tarea_ancla": "3-5 días"
 }

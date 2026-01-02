@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-01-02 05:08",
-  "tipo": "Inventario Semanal — Ajuste",
-  "que_cambio": "Corrección de inventario semanal",
-  "por_que": "Ajuste de datos"
+  "timestamp": "2026-01-02 09:58",
+  "tipo": "Plan Diario",
+  "que_cambio": "Cambios: Horizonte: 1-2 días -> 3-5 días",
+  "por_que": "Planificación diaria operativa"
 }
