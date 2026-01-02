@@ -77,11 +77,22 @@ def view_doc(doc_id):
 @app.route('/plantillas')
 def plantillas():
     state = data_service.get_home_state()
-    return render_template('plantillas.html', inventario=state['inventario'])
+    return render_template('plantillas.html', inventario=state['inventario'], state=state)
 
 @app.route('/bitacora/nueva')
 def nueva_bitacora():
     return render_template('bitacora_form.html')
+
+@app.route('/nuevo-inventario')
+def nuevo_inventario():
+    state = data_service.get_home_state()
+    # Historial para "Espejo Retrovisor"
+    historial = data_service.get_historial_inventarios(3)
+    # Contexto Estrategico (Q1 por defecto)
+    estrategia_html = data_service.get_estrategia_actual("Q1")
+    
+    return render_template('inventario.html', historial=historial, estrategia=estrategia_html)
+
 
 @app.route('/api/guardar', methods=['POST'])
 def guardar_entrada():
@@ -94,7 +105,15 @@ def guardar_entrada():
     obligaciones = request.form.get('obligaciones')
     tarea_ancla = request.form.get('tarea_ancla')
     resto_dia = request.form.get('resto_dia')
+    horizonte_tarea_ancla = request.form.get('horizonte_tarea_ancla')
+    
+    # Campos Inventario Estructurado (Fase 2)
     energia = request.form.get('energia')
+    focos_activos = request.form.get('focos_activos')
+    mantenimiento = request.form.get('mantenimiento')
+    semillas = request.form.get('semillas')
+    
+    # Legacy fields mapping
     claridad_frentes = request.form.get('claridad_frentes')
     ajuste_necesario = request.form.get('ajuste_necesario')
     
@@ -109,9 +128,18 @@ def guardar_entrada():
         except (json.JSONDecodeError, AttributeError):
             obligaciones_data = obligaciones
 
-        data_service.save_plan_diario(obligaciones_data, tarea_ancla or '', resto_dia or '')
-    elif tipo == 'Inventario Semanal' and energia:
-        data_service.save_inventario(energia, claridad_frentes or '', ajuste_necesario or '')
+        data_service.save_plan_diario(
+            obligaciones_data, 
+            tarea_ancla or '', 
+            resto_dia or '',
+            horizonte_tarea_ancla or ''
+        )
+
+    elif (tipo == 'Inventario Semanal' or tipo == 'Inventario Semanal — Ajuste') and energia:
+        if focos_activos or mantenimiento or semillas:
+            data_service.save_inventario_estructurado(energia, focos_activos, mantenimiento, semillas)
+        else:
+            data_service.save_inventario(energia, claridad_frentes or '', ajuste_necesario or '')
     
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
     
@@ -122,14 +150,25 @@ def guardar_entrada():
     if tipo == 'Plan Diario' and contenido:
         # Plan Diario uses structured content
         entry += f"**Contenido:**\n{contenido}\n"
-    elif tipo == 'Inventario Semanal':
+    elif tipo == 'Inventario Semanal' or tipo == 'Inventario Semanal — Ajuste':
         # Inventario Semanal uses specific fields
         if energia:
             entry += f"**Energía/Estado:**\n{energia}\n"
-        if claridad_frentes:
-            entry += f"**Claridad de Frentes:**\n{claridad_frentes}\n"
-        if ajuste_necesario:
-            entry += f"**Ajuste Necesario:**\n{ajuste_necesario}\n"
+        
+        # New Structured Fields Logic
+        if focos_activos:
+             entry += f"**Focos Activos (Q1):**\n{focos_activos}\n"
+        elif claridad_frentes:
+             entry += f"**Claridad de Frentes:**\n{claridad_frentes}\n"
+             
+        if mantenimiento:
+             entry += f"**Mantenimiento (Capa 1):**\n{mantenimiento}\n"
+             
+        if semillas:
+             entry += f"**Semillas / Latentes (Capa 3):**\n{semillas}\n"
+        elif ajuste_necesario:
+             entry += f"**Ajuste Necesario:**\n{ajuste_necesario}\n"
+             
     else:
         # Manual adjustments use standard format
         entry += f"**Qué cambió:**\n{que_cambio or ''}\n"
@@ -173,6 +212,33 @@ def chat_history():
     history = agent_service.load_history()
     return jsonify(history)
 
+
+@app.route('/api/ultimo-inventario')
+def api_ultimo_inventario():
+    data = data_service.get_ultimo_inventario_estructurado()
+    if data:
+        return jsonify({'found': True, 'data': data})
+    return jsonify({'found': False})
+
+@app.route('/editar-inventario')
+def editar_inventario():
+    """
+    Carga el último inventario para ser editado/ajustado.
+    """
+    state = data_service.get_home_state()
+    # Historial para "Espejo Retrovisor"
+    historial = data_service.get_historial_inventarios(3)
+    # Contexto Estrategico (Q1 por defecto)
+    estrategia_html = data_service.get_estrategia_actual("Q1")
+    
+    # Datos para prellenar
+    prefill = data_service.get_ultimo_inventario_estructurado()
+    
+    return render_template('inventario.html', 
+                           historial=historial, 
+                           estrategia=estrategia_html,
+                           prefill=prefill,
+                           is_edit=True)
 
 # ============================================================================
 # Rutas para edición y ajuste de plan diario

@@ -13,26 +13,55 @@
     {# ============================================================ #}
     {# SECCIÓN: OBLIGACIONES REALES #}
     {# ============================================================ #}
+    {# ============================================================ #}
+    {# SECCIÓN: OBLIGACIONES REALES #}
+    {# ============================================================ #}
     <div class="form-group">
         <label>1. Obligaciones Reales (Ya existen)</label>
-        <small style="display: block; color: #888; margin-bottom: 0.5rem; font-style: italic;">
-            Modifica, añade o elimina obligaciones según sea necesario
-        </small>
+        <div
+            style="background: #eef2ff; border-left: 3px solid #6366f1; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.85rem; color: #4338ca;">
+            <strong>Ajustando Realidad:</strong> ¿Cambió el tipo de tarea? <br>
+            <span style="color: #ef4444;">🔴 Foco (Trabajo)</span> |
+            <span style="color: #10b981;">🟢 Mante (Sostén)</span> |
+            <span style="color: #3b82f6;">🔵 Semilla (Futuro)</span>
+        </div>
 
         <div id="obligaciones-container"
             style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
             {# Las obligaciones se cargan aquí desde JavaScript o Jinja2 #}
             {% if obligaciones %}
             {% for obl in obligaciones %}
-            <div class="obligation-row" data-id="{{ obl.id }}">
-                <input type="text" class="obl-text" value="{{ obl.texto }}" placeholder="Descripción..."
-                    style="flex: 1; padding: 0.5rem;">
-                <select class="obl-type" style="width: auto; background-color: #f9fafb; padding: 0.5rem;">
-                    <option value="contexto" {% if obl.tipo=='contexto' %}selected{% endif %}>Nota / Contexto</option>
-                    <option value="registrable" {% if obl.tipo=='registrable' %}selected{% endif %}>Registrable</option>
-                </select>
+            <div class="obligation-row" data-id="{{ obl.id }}"
+                style="display: flex; gap: 0.5rem; align-items: center; padding: 0.5rem; background: white; border: 1px solid #e5e7eb; border-radius: 6px;">
+
+                <div style="flex: 1;">
+                    <input type="text" class="obl-text" value="{{ obl.texto }}" placeholder="Descripción..."
+                        style="width: 100%; border: none; outline: none; font-size: 0.95rem;">
+                </div>
+
+                <div style="display: flex; gap: 0.25rem; background: #f3f4f6; padding: 0.25rem; border-radius: 4px;">
+                    <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;"
+                        title="Foco (Trabajo)">
+                        <input type="radio" name="tag_{{ obl.id }}" value="foco" {% if obl.tag=='foco' or not obl.tag
+                            %}checked{% endif %} class="obl-tag">
+                        <span style="font-size: 0.8rem;">🔴</span>
+                    </label>
+                    <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;"
+                        title="Mantenimiento">
+                        <input type="radio" name="tag_{{ obl.id }}" value="mantenimiento" {% if obl.tag=='mantenimiento'
+                            %}checked{% endif %} class="obl-tag">
+                        <span style="font-size: 0.8rem;">🟢</span>
+                    </label>
+                    <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;"
+                        title="Semilla (Futuro)">
+                        <input type="radio" name="tag_{{ obl.id }}" value="semilla" {% if obl.tag=='semilla' %}checked{%
+                            endif %} class="obl-tag">
+                        <span style="font-size: 0.8rem;">🔵</span>
+                    </label>
+                </div>
+
                 <button type="button" class="btn btn-outline" onclick="eliminarObligacion(this)"
-                    style="padding: 0.5rem; color: #EF4444; border-color: #EF4444;" title="Eliminar">
+                    style="padding: 0.2rem 0.5rem; color: #9ca3af; border: none;" title="Eliminar">
                     ✕
                 </button>
             </div>
@@ -55,11 +84,21 @@
     <div class="form-group"
         style="background: #F3F4F6; padding: 1.5rem; border-radius: 4px; border: 2px dashed #9CA3AF;">
         <label style="color: #EF4444;">2. Tarea Estructural (Máximo 1 — SOLO UNA)</label>
-        <small style="display: block; color: #666; margin-bottom: 0.5rem; font-style: italic;">
-            Puedes cambiarla o dejarla vacía si necesitas reducir carga
-        </small>
-        <input type="text" name="tarea_ancla" id="tarea_ancla" value="{{ tarea_ancla }}"
-            placeholder="Opcional. Solo si hay capacidad." style="padding: 1.2rem;">
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="text" name="tarea_ancla" id="tarea_ancla" value="{{ tarea_ancla }}"
+                placeholder="Opcional. Solo si hay capacidad." style="padding: 1.2rem; flex: 3;">
+
+            <!-- Horizonte Esperado (Fase 2) -->
+            <select name="horizonte_tarea_ancla" id="horizonte_tarea_ancla"
+                style="flex: 1; padding: 0.5rem; font-size: 0.85rem; border: 1px solid #d1d5db; border-radius: 4px; color: #4b5563;">
+                <option value="">(Horizonte)</option>
+                <option value="1-2 días">1-2 días</option>
+                <option value="3-5 días">3-5 días</option>
+                <option value="1 semana">1 semana</option>
+                <option value="2 semanas">2 semanas</option>
+                <option value="+1 mes">+1 mes</option>
+            </select>
+        </div>
     </div>
 
     {# ============================================================ #}
@@ -108,12 +147,6 @@
     // Inicialización
     // ============================================================================
     document.addEventListener('DOMContentLoaded', function () {
-        // Si no hay obligaciones pre-cargadas, añadir una fila vacía
-        const container = document.getElementById('obligaciones-container');
-        if (container.children.length === 0) {
-            anadirObligacion();
-        }
-
         // Contador de caracteres para "Por qué"
         const porQueTextarea = document.getElementById('por_que');
         const charCounter = document.getElementById('char-counter');
@@ -149,15 +182,34 @@
         row.style.display = 'flex';
         row.style.gap = '0.5rem';
         row.style.alignItems = 'center';
+        row.style.padding = '0.5rem';
+        row.style.background = 'white';
+        row.style.border = '1px solid #e5e7eb';
+        row.style.borderRadius = '6px';
 
         row.innerHTML = `
-        <input type="text" class="obl-text" placeholder="Descripción..." style="flex: 1; padding: 0.5rem;">
-        <select class="obl-type" style="width: auto; background-color: #f9fafb; padding: 0.5rem;">
-            <option value="contexto">Nota / Contexto</option>
-            <option value="registrable">Registrable</option>
-        </select>
+        <div style="flex: 1;">
+            <input type="text" class="obl-text" placeholder="Descripción..." 
+                style="width: 100%; border: none; outline: none; font-size: 0.95rem;">
+        </div>
+        
+        <div style="display: flex; gap: 0.25rem; background: #f3f4f6; padding: 0.25rem; border-radius: 4px;">
+            <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;" title="Foco (Trabajo)">
+                <input type="radio" name="tag_${id}" value="foco" checked class="obl-tag">
+                <span style="font-size: 0.8rem;">🔴</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;" title="Mantenimiento">
+                <input type="radio" name="tag_${id}" value="mantenimiento" class="obl-tag">
+                <span style="font-size: 0.8rem;">🟢</span>
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; padding: 0 0.25rem;" title="Semilla (Futuro)">
+                <input type="radio" name="tag_${id}" value="semilla" class="obl-tag">
+                <span style="font-size: 0.8rem;">🔵</span>
+            </label>
+        </div>
+
         <button type="button" class="btn btn-outline" onclick="eliminarObligacion(this)" 
-                style="padding: 0.5rem; color: #EF4444; border-color: #EF4444;" title="Eliminar">
+                style="padding: 0.2rem 0.5rem; color: #9ca3af; border: none;" title="Eliminar">
             ✕
         </button>
     `;
@@ -178,15 +230,19 @@
 
         rows.forEach(row => {
             const texto = row.querySelector('.obl-text').value.trim();
-            const tipo = row.querySelector('.obl-type').value;
+            // Get selected radio
+            const selectedRadio = row.querySelector('input[type="radio"]:checked');
+            const tag = selectedRadio ? selectedRadio.value : 'foco';
+
             const id = row.getAttribute('data-id');
 
             if (texto) {
                 obligaciones.push({
                     id: id,
                     texto: texto,
-                    tipo: tipo,
-                    estado: tipo === 'registrable' ? 'pendiente' : undefined
+                    tipo: 'registrable',
+                    tag: tag,
+                    estado: 'pendiente'
                 });
             }
         });
@@ -205,14 +261,11 @@
 
 <style>
     .obligation-row {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        margin-bottom: 0.5rem;
+        transition: background-color 0.2s;
     }
 
-    .obligation-row .obl-text {
-        flex: 1;
+    .obligation-row:hover {
+        background-color: #f9fafb;
     }
 </style>
 

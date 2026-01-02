@@ -82,29 +82,77 @@ def get_latest_inventario():
     except:
         return None
 
-def save_plan_diario(obligaciones, tarea_ancla, resto_dia):
+def save_plan_diario(obligaciones, tarea_ancla, resto_dia, horizonte_tarea_ancla=""):
     """Persist daily plan to JSON storage."""
     plan_path = os.path.join(DATA_DIR, 'latest_plan.json')
     data = {
         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
         'obligaciones': obligaciones,
         'tarea_ancla': tarea_ancla,
-        'resto_dia': resto_dia
+        'resto_dia': resto_dia,
+        'horizonte_tarea_ancla': horizonte_tarea_ancla
     }
     with open(plan_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-def save_inventario(energia, claridad_frentes, ajuste_necesario):
-    """Persist weekly inventory to JSON storage."""
+import frases_sistema
+
+# ... (existing imports)
+
+# ... (existing functions)
+
+def save_inventario_estructurado(energia, focos_activos, mantenimiento, semillas):
+    """
+    Persist structured weekly inventory to JSON storage (Phase 2).
+    Also updates ultimo_ajuste.json to reflect this system movement.
+    """
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
     inv_path = os.path.join(DATA_DIR, 'latest_inventario.json')
     data = {
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M'),
+        'timestamp': timestamp,
         'energia': energia,
-        'claridad_frentes': claridad_frentes,
-        'ajuste_necesario': ajuste_necesario
+        'focos_activos': focos_activos,
+        'mantenimiento': mantenimiento,
+        'semillas': semillas,
+        'tipo_estructura': 'v2_capas'
     }
     with open(inv_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+    # Sync with ultimo_ajuste.json
+    try:
+        ajuste_path = os.path.join(DATA_DIR, 'ultimo_ajuste.json')
+        ajuste_data = {
+            'timestamp': timestamp,
+            'tipo': 'Inventario Semanal',
+            'que_cambio': 'Registro de nuevo inventario semanal',
+            'por_que': 'Mantenimiento del sistema'
+        }
+        with open(ajuste_path, 'w', encoding='utf-8') as f:
+            json.dump(ajuste_data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"Error updating ultimo_ajuste from inventory: {e}")
+
+    # Append to Bitacora Markdown
+    try:
+        agregar_entrada_bitacora_inventario(
+            timestamp=timestamp,
+            energia=energia,
+            focos=focos_activos,
+            mantenimiento=mantenimiento,
+            semillas=semillas
+        )
+    except Exception as e:
+        print(f"Error appending to bitacora: {e}")
+
+def save_inventario(energia, claridad_frentes, ajuste_necesario):
+    """Legacy wrapper for backward compatibility."""
+    save_inventario_estructurado(
+        energia=energia,
+        focos_activos=claridad_frentes,
+        mantenimiento="(Migración formato anterior)",
+        semillas=ajuste_necesario
+    )
 
 def update_obligation_status(item_id, status):
     """Update the status of a specific obligation in the latest plan."""
@@ -136,15 +184,180 @@ def update_obligation_status(item_id, status):
         print(f"Error updating obligation: {e}")
         return False
 
+def get_historial_inventarios(limit=3):
+    """
+    Recupera los ultimos N inventarios de la bitacora para el panel 'Espejo Retrovisor'.
+    Retorna lista de dicts con {fecha, hora, mantenimiento, semillas, estado_mantenimiento, estado_semillas}
+    """
+    entradas = obtener_entradas_bitacora_estructuradas()
+    inventarios = [e for e in entradas if e['tipo'] == 'Inventario Semanal' or e['tipo'] == 'Inventario Semanal — Ajuste']
+    
+    recientes = inventarios[:limit]
+    
+    historial = []
+    for inv in recientes:
+        campos = inv['campos']
+        
+        mantenimiento = campos.get('mantenimiento', '')
+        semillas = campos.get('semillas', '')
+        
+        if not mantenimiento and not semillas:
+             semillas = campos.get('ajuste_necesario', '')
+             mantenimiento = "(No registrado en formato anterior)"
+        
+        timestamp_parts = inv['timestamp'].split(' ')
+        fecha = timestamp_parts[0]
+        hora = timestamp_parts[1] if len(timestamp_parts) > 1 else ""
+
+        historial.append({
+            'fecha': fecha,
+            'hora': hora,
+            'mantenimiento': mantenimiento,
+            'semillas': semillas,
+            'vacio_mantenimiento': len(mantenimiento) < 5 or "No registrado" in mantenimiento,
+            'vacio_semillas': len(semillas) < 5 or "None" in semillas
+        })
+        
+    return historial
+
+def get_ultimo_inventario_estructurado():
+    """
+    Recupera el ultimo inventario estructurado para precarga inteligente.
+    Retorna dict con {energia, focos_activos, mantenimiento, semillas} o None
+    """
+    entradas = obtener_entradas_bitacora_estructuradas()
+    inventarios = [e for e in entradas if e['tipo'] == 'Inventario Semanal' or e['tipo'] == 'Inventario Semanal — Ajuste']
+    
+    if not inventarios:
+        return None
+        
+    latest = inventarios[0]
+    campos = latest['campos']
+    
+    return {
+        'energia': campos.get('energia', ''),
+        'focos_activos': campos.get('focos_activos', '') or campos.get('claridad_frentes', ''),
+        'mantenimiento': campos.get('mantenimiento', ''),
+        'semillas': campos.get('semillas', '') or campos.get('ajuste_necesario', '')
+    }
+
+def get_historial_puntos_diarios(limit=3):
+    """
+    Recupera la distribucion de colores (tags) de los ultimos N planes diarios.
+    Retorna lista de dicts con {fecha, puntos: ['red', 'green', 'blue']}
+    """
+    entradas = obtener_entradas_bitacora_estructuradas()
+    planes = [e for e in entradas if e['tipo'] == 'Plan Diario' or e['tipo'] == 'Plan Diario — Ajuste']
+    
+    # Filtrar para tener solo uno por dia (el ultimo de cada dia)
+    seen_dates = set()
+    daily_planes = []
+    for p in planes:
+        date = p['timestamp'].split(' ')[0]
+        if date not in seen_dates:
+            seen_dates.add(date)
+            daily_planes.append(p)
+            if len(daily_planes) >= limit:
+                break
+                
+    historial = []
+    for plan in daily_planes:
+        puntos = []
+        md_content = plan['contenido_completo']
+        
+        # Parsear el markdown para buscar tags (esto es un parche hasta que tengamos JSON real en bitacora)
+        # Buscamos patrones como "(Registrable - Foco)" o inferimos
+        # En Fase 2, guardaremos el tag explicito en el markdown.
+        # Por ahora, simulamos 'red' (Foco) si no hay tag, ya que es el default.
+        
+        # Contar items en la lista de obligaciones
+        items_count = md_content.count("- ☑") + md_content.count("- ☐")
+        
+        # Buscar tags especificos en el texto del plan
+        # (Futura implementacion guardara Tags en el markdown como [Foco], [Mante], etc.)
+        
+        # Por defecto asumimos Foco (Rojo) para datos historicos viejos
+        puntos = ['red'] * items_count
+        
+        historial.append({
+            'fecha': plan['timestamp'].split(' ')[0],
+            'puntos': puntos
+        })
+        
+    return historial
+
+def get_estrategia_actual(quarter="Q1"):
+    """
+    Parsea el archivo de mapa estrategico y extrae la seccion del trimestre actual.
+    Retorna string HTML o Markdown con el contenido.
+    """
+    mapa_path = os.path.join(DOCS_DIR, '01_mapa_estrategico_2026.md')
+    if not os.path.exists(mapa_path):
+        return "<p>No se encontró el mapa estratégico.</p>"
+        
+    try:
+        with open(mapa_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            
+        # Buscar la seccion del Q especifico
+        # Patron busca desde <details>...Q1... hasta </details>
+        # Asumimos estructura <details><summary>...Q1...</summary>...</div></details>
+        
+        pattern = r'(<details>\s*<summary><strong>' + quarter + r'.*?</strong></summary>.*?</div>\s*</details>)'
+        match = re.search(pattern, content, re.DOTALL)
+        
+        if match:
+            return match.group(1)
+        else:
+            return f"<p>No se encontró información para {quarter} en el mapa.</p>"
+            
+    except Exception as e:
+        return f"<p>Error leyendo estrategia: {e}</p>"
+
+def agregar_entrada_bitacora_inventario(timestamp, energia, focos, mantenimiento, semillas):
+    """
+    Appends a new Weekly Inventory entry to the markdown bitacora.
+    """
+    entrada = f"""
+## {timestamp}
+
+**Tipo:** Inventario Semanal
+
+**Energía/Estado:**
+{energia}
+
+**Focos Activos:**
+{focos}
+
+**Mantenimiento:**
+{mantenimiento}
+
+**Semillas / Latentes:**
+{semillas}
+
+---
+
+"""
+    with open(BITACORA_PATH, 'a', encoding='utf-8') as f:
+        f.write(entrada)
+
 def get_home_state():
     """
     Aggregate all data for homepage display.
-    Returns dict with: plan_diario, inventario, ultimo_ajuste
+    Returns dict with: plan_diario, inventario, ultimo_ajuste, frase_sistema
     """
+    plan = get_latest_plan_diario() or {}
+    inv = get_latest_inventario()
+    ajuste = get_ultimo_ajuste()
+    
+    frase = frases_sistema.obtener_frase_sistema(plan, inv, ajuste)
+    
     return {
-        'plan_diario': get_latest_plan_diario(),
-        'inventario': get_latest_inventario(),
-        'ultimo_ajuste': get_ultimo_ajuste()  # Usar nueva función
+        'plan_diario': plan,
+        'inventario': inv,
+        'ultimo_ajuste': ajuste,
+        'historial_puntos': get_historial_puntos_diarios(3),
+        'frase_sistema': frase
     }
 
 
@@ -411,13 +624,26 @@ def obtener_entradas_bitacora_estructuradas():
         if energia_match:
             campos['energia'] = energia_match.group(1).strip()
         
+        focos_match = re.search(r'\*\*Focos Activos:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if focos_match:
+            campos['focos_activos'] = focos_match.group(1).strip()
+            
+        mantenimiento_match = re.search(r'\*\*Mantenimiento:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if mantenimiento_match:
+            campos['mantenimiento'] = mantenimiento_match.group(1).strip()
+            
+        semillas_match = re.search(r'\*\*Semillas / Latentes:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
+        if semillas_match:
+            campos['semillas'] = semillas_match.group(1).strip()
+        
+        # Legacy fields fallback
         claridad_match = re.search(r'\*\*Claridad de Frentes:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
-        if claridad_match:
-            campos['claridad_frentes'] = claridad_match.group(1).strip()
+        if claridad_match and 'focos_activos' not in campos:
+            campos['focos_activos'] = claridad_match.group(1).strip()
         
         ajuste_match = re.search(r'\*\*Ajuste Necesario:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)
-        if ajuste_match:
-            campos['ajuste_necesario'] = ajuste_match.group(1).strip()
+        if ajuste_match and 'semillas' not in campos:
+            campos['semillas'] = ajuste_match.group(1).strip()
         
         # Campos para plan diario
         contenido_match = re.search(r'\*\*Contenido:\*\*\s*(.+?)(?:\n\*\*|\n\n|\Z)', entry_content, re.DOTALL)

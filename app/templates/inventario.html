@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+
+{% block content %}
+<header style="margin-bottom: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem;">
+    <h1 style="font-size: 1.5rem; color: #111827; margin-bottom: 0.5rem;">
+        {% if is_edit %}🛠️ Ajustar Inventario Semanal{% else %}Inventario Semanal{% endif %}
+    </h1>
+    <p style="color: #6b7280; font-size: 0.95rem;">
+        {% if is_edit %}
+        Corrigiendo la realidad registrada. La honestidad es dinámica.
+        {% else %}
+        Momento de observación, no de juicio. Limpia el parabrisas.
+        {% endif %}
+    </p>
+</header>
+
+<div class="split-layout" style="max-width: 1400px; margin: 0 auto; padding-bottom: 4rem;">
+    <!-- COLUMNA IZQUIERDA: CONTEXTO ESTRATÉGICO (BRÚJULA) -->
+    <aside class="strategy-panel">
+        <div class="strategy-card">
+            <div class="strategy-header">
+                <div class="strategy-title-wrapper">
+                    <h3>🧭 Brújula Trimestral (Q1)</h3>
+                    <span class="strategy-tag">Foco Activo</span>
+                </div>
+                <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Colapsar/Expandir">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+            <div class="strategy-content">
+                {% if estrategia %}
+                {{ estrategia | safe }}
+                {% else %}
+                <p style="color: #9ca3af; font-style: italic;">No se cargó la estrategia.</p>
+                {% endif %}
+            </div>
+            <div class="strategy-footer">
+                <p>💡 Usa esto para validar si tus focos de la semana se alinean con tu Q1.</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- COLUMNA DERECHA: FORMULARIO DE INVENTARIO -->
+    <main class="inventory-panel">
+        <!-- Espejo omitted -->
+
+        <form action="/api/guardar" method="POST" id="inventarioForm">
+            <input type="hidden" name="tipo"
+                value="{% if is_edit %}Inventario Semanal — Ajuste{% else %}Inventario Semanal{% endif %}">
+
+            <!-- CHECKLIST DE SIGNOS VITALES (omitted) -->
+
+            <!-- 3 CAJAS DEL INVENTARIO -->
+            <div style="margin-bottom: 2.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; font-weight: 600; color: #111827; margin: 0;">
+                        2. Descarga Mental
+                    </h3>
+                    {% if not is_edit %}
+                    <button type="button" id="btnCargarUltimo" onclick="cargarUltimoInventario()"
+                        style="background: transparent; border: 1px solid #d1d5db; color: #6b7280; padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                        📥 Cargar anterior (Iterar)
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Caja 1: Energía -->
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.4rem; font-size: 0.9rem;">
+                        🔋 Energía y Estado General
+                    </label>
+                    <textarea name="energia" rows="3" required id="inputEnergia"
+                        style="width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.75rem; font-family: inherit;"
+                        placeholder="¿Cansado? ¿Ansioso? ¿Claro? ¿Bloqueado? Sé honesto.">{{ prefill.energia if prefill else '' }}</textarea>
+                </div>
+
+                <!-- Caja 2: Focos Activos -->
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.4rem; font-size: 0.9rem; border-left: 3px solid #ef4444; padding-left: 0.5rem;">
+                        🔴 Focos Activos (Lo que empuja)
+                    </label>
+                    <textarea name="focos_activos" rows="3" id="inputFocos"
+                        style="width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.75rem; font-family: inherit;"
+                        placeholder="Hexagon, Clientes, Entregables...">{{ prefill.focos_activos if prefill else '' }}</textarea>
+                </div>
+
+                <!-- Caja 3: Mantenimiento -->
+                <div class="form-group" style="margin-bottom: 1.25rem;">
+                    <label
+                        style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.4rem; font-size: 0.9rem; border-left: 3px solid #10b981; padding-left: 0.5rem;">
+                        🏠 Mantenimiento (Lo que sostiene)
+                    </label>
+                    <textarea name="mantenimiento" rows="3" id="inputMantenimiento"
+                        style="width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.75rem; font-family: inherit;"
+                        placeholder="Salud, Trámites, Casa, Finanzas...">{{ prefill.mantenimiento if prefill else '' }}</textarea>
+                </div>
+
+                <!-- Caja 4: Semillas -->
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label
+                        style="display: block; font-weight: 600; color: #374151; margin-bottom: 0.4rem; font-size: 0.9rem; border-left: 3px solid #3b82f6; padding-left: 0.5rem;">
+                        🌱 Semillas / Latentes (Lo que vendrá)
+                    </label>
+                    <textarea name="semillas" rows="3" id="inputSemillas"
+                        style="width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 0.75rem; font-family: inherit;"
+                        placeholder="Europa, Ideas, SLS...">{{ prefill.semillas if prefill else '' }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; padding: 1rem; background: #111827; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                    Guardar Inventario Consciente
+                </button>
+            </div>
+        </form>
+    </main>
+</div>
+
+<style>
+    /* Layout Responsivo (Split View) */
+    .split-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        /* Mobile default */
+        gap: 2rem;
+        align-items: start;
+        transition: grid-template-columns 0.3s ease;
+    }
+
+    /* Clase para cuando está colapsado (solo aplica en desktop) */
+    .split-layout.collapsed {
+        grid-template-columns: 60px 1fr !important;
+    }
+
+
+    @media (min-width: 1024px) {
+        .split-layout {
+            grid-template-columns: 350px 1fr;
+        }
+
+        /* Sticky Strategy Panel on Desktop */
+        .strategy-panel {
+            position: sticky;
+            top: 2rem;
+            height: calc(100vh - 4rem);
+            overflow: visible;
+            z-index: 10;
+        }
+
+        .strategy-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            /* Ocupar todo el ancho de la columna (350px o 60px) */
+            transition: all 0.3s ease;
+            overflow: hidden;
+            /* Ocultar lo que no cabe */
+        }
+
+        /* Estado colapsado */
+        .split-layout.collapsed .strategy-card {
+            box-shadow: none;
+            border-right: 1px solid #e5e7eb;
+            background: #f3f4f6;
+            /* Fondo gris suave al colapsar */
+        }
+    }
+
+    .strategy-header {
+        background: #1f2937;
+        color: white;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 60px;
+        position: relative;
+    }
+
+    .strategy-title-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        overflow: hidden;
+        white-space: nowrap;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+    }
+
+    /* Ocultar título al colapsar */
+    .split-layout.collapsed .strategy-title-wrapper {
+        opacity: 0;
+        pointer-events: none;
+        width: 0;
+    }
+
+    .strategy-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #ffffff !important;
+    }
+
+    .strategy-tag {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .strategy-content {
+        padding: 1.5rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #374151;
+        overflow-y: auto;
+        flex-grow: 1;
+        opacity: 1;
+        transition: opacity 0.2s ease;
+    }
+
+    /* Ocultar contenido al colapsar */
+    .split-layout.collapsed .strategy-content {
+        opacity: 0;
+        pointer-events: none;
+        display: none;
+        /* Remover del layout para evitar scroll fantasma */
+    }
+
+    /* Ajustes específicos para el contenido extraído del markdown */
+    .strategy-content h4 {
+        color: #111827;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #f3f4f6;
+        padding-bottom: 0.25rem;
+    }
+
+    .strategy-content ul {
+        padding-left: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .strategy-content li {
+        margin-bottom: 0.4rem;
+    }
+
+    .strategy-footer {
+        background: #f9fafb;
+        padding: 0.75rem 1rem;
+        border-top: 1px solid #e5e7eb;
+        font-size: 0.8rem;
+        color: #6b7280;
+        display: block;
+    }
+
+    .split-layout.collapsed .strategy-footer {
+        display: none;
+    }
+
+    /* Botón Toggle */
+    .toggle-sidebar-btn {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        z-index: 20;
+        /* Absoluto para mantenerlo fijo aunque el header cambie */
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    /* Centrar botón cuando colapsado */
+    .split-layout.collapsed .toggle-sidebar-btn {
+        right: 50%;
+        transform: translate(50%, -50%) rotate(180deg);
+        color: #1f2937;
+        /* Cambiar a oscuro porque el fondo (header) puede desaparecer? No, el header sigue ahí. */
+        /* Espera, si el header se encoge a 60px, el botón centrado debe verse bien. */
+    }
+
+    /* Ajuste visual para el header colapsado */
+    .split-layout.collapsed .strategy-header {
+        background: transparent;
+        justify-content: center;
+        padding: 0;
+    }
+
+    /* Si queremos que el botón contraste en colapsado con fondo gris */
+    .split-layout.collapsed .strategy-header {
+        background: #f3f4f6;
+        /* Fondo gris del padre */
+        border-bottom: none;
+    }
+
+    .split-layout.collapsed .toggle-sidebar-btn {
+        color: #4b5563;
+        /* Gris oscuro para el icono */
+    }
+
+    .split-layout.collapsed .toggle-sidebar-btn:hover {
+        background: #e5e7eb;
+    }
+
+    /* Estilo ghost/placeholder */
+    .placeholder-data {
+        color: #4b5563;
+        font-style: italic;
+        background-color: #f9fafb;
+    }
+
+    .placeholder-data:focus {
+        color: #111827;
+        font-style: normal;
+        background-color: #fff;
+    }
+</style>
+
+<script>
+    function toggleSidebar() {
+        const layout = document.querySelector('.split-layout');
+        layout.classList.toggle('collapsed');
+
+        // Guardar preferencia
+        const isCollapsed = layout.classList.contains('collapsed');
+        localStorage.setItem('inventorySidebarCollapsed', isCollapsed);
+    }
+
+    // Cargar preferencia - DISABLED to prevent auto-collapse
+    document.addEventListener('DOMContentLoaded', () => {
+        // Clear any saved collapsed state
+        localStorage.removeItem('inventorySidebarCollapsed');
+        // Ensure sidebar starts expanded
+        const layout = document.querySelector('.split-layout');
+        if (layout) {
+            layout.classList.remove('collapsed');
+        }
+    });
+
+    function cargarUltimoInventario() {
+        const btn = document.getElementById('btnCargarUltimo');
+        btn.disabled = true;
+        btn.textContent = "Cargando...";
+
+        fetch('/api/ultimo-inventario')
+            .then(response => response.json())
+            .then(result => {
+                if (result.found && result.data) {
+                    const fields = {
+                        'energia': 'inputEnergia',
+                        'focos_activos': 'inputFocos',
+                        'mantenimiento': 'inputMantenimiento',
+                        'semillas': 'inputSemillas'
+                    };
+
+                    Object.keys(fields).forEach(key => {
+                        const el = document.getElementById(fields[key]);
+                        if (el) {
+                            el.value = result.data[key];
+                            // Añadir clase visual para indicar que es data precargada
+                            el.classList.add('placeholder-data');
+
+                            // Remover estilo al editar
+                            el.addEventListener('input', function () {
+                                this.classList.remove('placeholder-data');
+                            }, { once: true });
+                        }
+                    });
+                    btn.textContent = "✅ Cargado";
+                } else {
+                    btn.textContent = "⚠️ Vacío";
+                }
+
+                setTimeout(() => {
+                    btn.disabled = false;
+                    if (!result.found) btn.textContent = "📥 Cargar anterior";
+                }, 2000);
+            })
+            .catch(err => {
+                console.error(err);
+                btn.textContent = "❌ Error";
+                btn.disabled = false;
+            });
+    }
+</script>
+{% endblock %}

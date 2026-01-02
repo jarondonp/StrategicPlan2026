@@ -116,7 +116,6 @@
             </details>
             {% endif %}
 
-            {# Inventario Semanal #}
             {% if entrada.campos.energia %}
             <div class="entry-section">
                 <div class="section-label">ENERGÍA / ESTADO</div>
@@ -127,22 +126,32 @@
             </div>
             {% endif %}
 
-            {% if entrada.campos.claridad_frentes %}
+            {% if entrada.campos.focos_activos %}
             <div class="entry-section">
-                <div class="section-label">CLARIDAD DE FRENTES</div>
+                <div class="section-label" style="color: #EF4444;">FOCOS ACTIVOS</div>
                 <div class="section-content">
                     <pre
-                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.claridad_frentes }}</pre>
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.focos_activos }}</pre>
                 </div>
             </div>
             {% endif %}
 
-            {% if entrada.campos.ajuste_necesario %}
+            {% if entrada.campos.mantenimiento %}
             <div class="entry-section">
-                <div class="section-label">AJUSTE NECESARIO</div>
+                <div class="section-label" style="color: #10B981;">MANTENIMIENTO</div>
                 <div class="section-content">
                     <pre
-                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.ajuste_necesario }}</pre>
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.mantenimiento }}</pre>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if entrada.campos.semillas %}
+            <div class="entry-section">
+                <div class="section-label" style="color: #3B82F6;">SEMILLAS / LATENTES</div>
+                <div class="section-content">
+                    <pre
+                        style="white-space: pre-wrap; font-family: inherit; margin: 0;">{{ entrada.campos.semillas }}</pre>
                 </div>
             </div>
             {% endif %}

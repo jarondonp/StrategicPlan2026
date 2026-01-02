@@ -23,8 +23,15 @@
             style="margin: 0 0 1.5rem 0; font-size: 1.5rem; color: #1a1a1a; font-weight: 500; display: flex; align-items: center; gap: 0.75rem;">
             <span
                 style="display: inline-block; width: 8px; height: 8px; background: #10B981; border-radius: 50%; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);"></span>
-            Estado Ejecutivo
         </h2>
+
+        {% if state.frase_sistema %}
+        <div
+            style="margin-bottom: 1.5rem; background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.95rem; display: flex; align-items: start; gap: 0.75rem;">
+            <span style="font-size: 1.1rem; line-height: 1;">💡</span>
+            <span style="font-weight: 500; font-style: italic;">"{{ state.frase_sistema }}"</span>
+        </div>
+        {% endif %}
 
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
             <!-- Última Actualización -->
@@ -286,8 +293,9 @@
         </div>
     </div>
 
-    <!-- Contexto Operativo: 2 columnas -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.5rem;">
+    <!-- Contexto Operativo: Grid adaptable -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 2.5rem;">
 
         <!-- Plan Diario Actual -->
         <div
@@ -340,7 +348,6 @@
             <script>
                 function toggleObligation(id, isChecked) {
                     const status = isChecked ? 'hecho' : 'pendiente';
-                    // Optimistic UI update
                     const checkbox = event.target;
                     const textSpan = checkbox.nextElementSibling;
                     if (isChecked) {
@@ -361,7 +368,6 @@
                         .then(response => response.json())
                         .then(data => {
                             if (!data.success) {
-                                // Revert on failure
                                 checkbox.checked = !isChecked;
                                 alert('Error al actualizar estado.');
                             }
@@ -387,7 +393,18 @@
                     Tarea Ancla</div>
                 <div
                     style="padding: 1rem; background: #EFF6FF; border-radius: 6px; border-left: 3px solid #3B82F6; font-size: 0.9rem; line-height: 1.6; color: #1E40AF; font-weight: 500;">
-                    {{ state.plan_diario.tarea_ancla }}</div>
+                    {{ state.plan_diario.tarea_ancla }}
+                </div>
+                {% if state.plan_diario.horizonte_tarea_ancla %}
+                <div
+                    style="font-size: 0.75rem; color: #6B7280; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                    <span>🕒 Horizonte:</span>
+                    <span
+                        style="background: #F3F4F6; padding: 2px 6px; border-radius: 4px; font-weight: 500; color: #4B5563;">
+                        {{ state.plan_diario.horizonte_tarea_ancla }}
+                    </span>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
             {% else %}
@@ -398,9 +415,86 @@
             <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
                 <a href="/plantillas#plan-diario" class="btn"
                     style="flex: 1; text-align: center; font-size: 0.85rem;">Crear Plan</a>
-                <a href="/editar-plan" class="btn btn-outline"
+                <a href="/plantillas" class="btn btn-outline"
                     style="flex: 1; text-align: center; font-size: 0.85rem;">Ajuste</a>
             </div>
+        </div>
+
+        <!-- Frase del Sistema -->
+
+
+        <!-- ... (rest of template) ... -->
+
+        <!-- Inventario Semanal (Resumen) -->
+        <div
+            style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-top: 4px solid #F59E0B;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <h3
+                    style="margin: 0; font-size: 1.1rem; color: #1a1a1a; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                    📝 Contexto Semanal
+                </h3>
+                <a href="/nuevo-inventario"
+                    style="font-size: 0.8rem; color: #6B7280; text-decoration: underline;">Nuevo</a>
+            </div>
+
+            {% if state.inventario %}
+            <!-- Energía -->
+            <div style="margin-bottom: 1rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6B7280; margin-bottom: 0.25rem; font-weight: 600;">
+                    Energía</div>
+                <div
+                    style="font-size: 0.9rem; color: #374151; padding: 0.5rem; background: #F9FAFB; border-radius: 4px;">
+                    {{ state.inventario.energia | default('Sin registro', true) }}
+                </div>
+            </div>
+
+            <!-- Focos Activos -->
+            <div style="margin-bottom: 1rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #EF4444; margin-bottom: 0.25rem; font-weight: 600;">
+                    🔴 Focos Activos</div>
+                <div
+                    style="font-size: 0.9rem; color: #374151; padding: 0.5rem; background: #FEF2F2; border-radius: 4px;">
+                    {{ state.inventario.focos_activos | default('Ninguno', true) }}
+                </div>
+            </div>
+
+            <!-- Mantenimiento -->
+            <div style="margin-bottom: 1rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #10B981; margin-bottom: 0.25rem; font-weight: 600;">
+                    🟢 Mantenimiento</div>
+                <div
+                    style="font-size: 0.9rem; color: #374151; padding: 0.5rem; background: #ECFDF5; border-radius: 4px;">
+                    {{ state.inventario.mantenimiento | default('Ninguno', true) }}
+                </div>
+            </div>
+
+            <!-- Semillas -->
+            <div style="margin-bottom: 1rem;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #3B82F6; margin-bottom: 0.25rem; font-weight: 600;">
+                    🔵 Semillas / Latentes</div>
+                <div
+                    style="font-size: 0.9rem; color: #374151; padding: 0.5rem; background: #EFF6FF; border-radius: 4px;">
+                    {{ state.inventario.semillas | default('Ninguno', true) }}
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+                <a href="/editar-inventario" style="color: #6B7280; text-decoration: underline; cursor: pointer;">✏️
+                    Ajustar</a>
+                <span style="color: #9CA3AF;">{{ state.inventario.timestamp }}</span>
+            </div>
+            {% else %}
+            <p style="color: #9CA3AF; font-style: italic; margin-bottom: 1.5rem;">
+                No hay inventario activo.
+            </p>
+            <a href="/nuevo-inventario" class="btn btn-outline" style="display: block; text-align: center;">Iniciar
+                Inventario</a>
+            {% endif %}
         </div>
 
         <!-- Último Ajuste -->
@@ -408,7 +502,7 @@
             style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-top: 4px solid #8B5CF6;">
             <h3
                 style="margin: 0 0 1.25rem 0; font-size: 1.1rem; color: #1a1a1a; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-                📝 Último Ajuste del Sistema
+                🛠️ Último Ajuste
             </h3>
 
             {% if state.ultimo_ajuste %}
@@ -438,12 +532,11 @@
             </div>
 
             {% else %}
-            <p style="color: #9CA3AF; font-style: italic; margin-bottom: 1.5rem;">No hay registros en la bitácora.</p>
+            <p style="color: #9CA3AF; font-style: italic; margin-bottom: 1.5rem;">No hay registros de ajuste.</p>
             {% endif %}
 
             <a href="/docs/bitacora" class="btn btn-outline"
-                style="display: block; text-align: center; margin-top: 1.5rem; font-size: 0.85rem;">Ver Bitácora
-                Completa</a>
+                style="display: block; text-align: center; margin-top: 1.5rem; font-size: 0.85rem;">Ver Bitácora</a>
         </div>
     </div>
 
